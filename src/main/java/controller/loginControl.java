@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Util.Encryption;
 import dao.CustomerDao;
 
 /**
@@ -45,6 +46,8 @@ public class loginControl extends HttpServlet {
 		String e_userName = "";
 		String userName = request.getParameter("userName");
 		String password = request.getParameter("password");
+		System.out.println(password);
+		password = new Encryption().toSHA1(password);
 		String remember = request.getParameter("remember");
 		CustomerDao cs = new CustomerDao();
 
@@ -55,10 +58,9 @@ public class loginControl extends HttpServlet {
 		}
 		if (cs.userNameCheck(userName, password) == true) {
 			url = "/sellingPage.jsp";
-			if (remember.equals("on")) {
 				HttpSession session = request.getSession();
 				request.setAttribute("session", session);
-			}
+				System.out.println(session);
 		} else {
 			url = "/index2.jsp";
 			e_userName = "User name or password not match";
@@ -68,4 +70,5 @@ public class loginControl extends HttpServlet {
 		rd.forward(request, response);
 	}
 
+	
 }

@@ -50,11 +50,11 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 						<div class="card-body">
 							<h4 class="card-title" align="center">Login</h4>
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="loginControl" >
+								action="loginControl">
 								<div class="form-group">
 									<label for="userName">User Name</label> <input id="email"
-										type="text" class="form-control" name="userName" 
-										required autofocus>
+										type="text" class="form-control" name="userName" required
+										autofocus>
 									<div class="invalid-feedback">Email is invalid</div>
 								</div>
 								<div class="form-group">

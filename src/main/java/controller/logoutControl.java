@@ -1,10 +1,12 @@
 package controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class logoutControl
@@ -24,8 +26,16 @@ public class logoutControl extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
+		 String url = "";
+		 String logout = request.getParameter("logout");
+		 if(logout.equals("logout") == true) {
+			 HttpSession session = request.getSession();
+			 session.invalidate();
+			 url = request.getScheme() + "://" + request.getServerName() +":"+ request.getServerPort() + request.getContextPath() + "/index2.jsp";
+			 System.out.println(url);
+			 response.sendRedirect(url);
+		 }
+		 
 	}
 
 	/**

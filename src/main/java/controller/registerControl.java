@@ -16,6 +16,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import Util.Encryption;
 import dao.CustomerDao;
 import model.Customer;
 
@@ -158,6 +159,8 @@ public class registerControl extends HttpServlet {
 			if (emailRegister.equals("on")) {
 				temp = true;
 			}
+
+			passWord = new Encryption().toSHA1(passWord);
 			Date date = Date.valueOf(birth);
 			Random rd = new Random();
 			String userID = (String) userName + rd.nextInt(1000, 9999);
