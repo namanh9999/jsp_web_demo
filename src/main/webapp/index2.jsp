@@ -31,9 +31,9 @@
 </head>
 <%
 // get web's url
+String ss = session.getAttribute("session") + "";
 String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 		+ request.getContextPath();
-
 System.out.println(url);
 String e_userName = request.getAttribute("e_userName") + "";
 e_userName = (e_userName.equals("null") ? "" : e_userName);
@@ -41,6 +41,7 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 <body class="my-login-page">
 	<section class="h-100">
 		<div class="container h-100">
+
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
 					<div class="brand">

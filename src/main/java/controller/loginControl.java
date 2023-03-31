@@ -43,12 +43,20 @@ public class loginControl extends HttpServlet {
 			throws ServletException, IOException {
 		String url = "";
 
+		HttpSession session = null;
+		session = request.getSession();
+		System.out.println("this is session 1  : " + session);
 		String e_userName = "";
 		String userName = request.getParameter("userName");
+		System.out.println(userName);
+		session.setAttribute("userName", userName);
+		System.out.println( "This is session 2 \" userName 2 \" " + session.getAttribute("userName"));
+		request.setAttribute("session", session);
 		String password = request.getParameter("password");
 		System.out.println(password);
 		password = new Encryption().toSHA1(password);
-		String remember = request.getParameter("remember");
+
+		System.out.println(password);
 		CustomerDao cs = new CustomerDao();
 
 		try {
@@ -58,9 +66,6 @@ public class loginControl extends HttpServlet {
 		}
 		if (cs.userNameCheck(userName, password) == true) {
 			url = "/sellingPage.jsp";
-				HttpSession session = request.getSession();
-				request.setAttribute("session", session);
-				System.out.println(session);
 		} else {
 			url = "/index2.jsp";
 			e_userName = "User name or password not match";
@@ -70,5 +75,4 @@ public class loginControl extends HttpServlet {
 		rd.forward(request, response);
 	}
 
-	
 }

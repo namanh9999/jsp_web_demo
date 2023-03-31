@@ -211,4 +211,37 @@ public class CustomerDao implements DaoInterface<Customer> {
 		}
 		return check;
 	}
+	public boolean passCheck(String pass) {
+		boolean check = false;
+		Connection  conn = JDBCUtil.getConnection();
+		String sql = " select passWord from Customer where passWord =?   ";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, pass );
+			ResultSet rs = ps.executeQuery();
+			while(rs.next()) {
+				if(rs.getString("passWord").equals(pass)) {
+					check = true;
+				}
+			}
+			JDBCUtil.closeConnection(conn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return check;
+	}
+	public void updatePassword(String userName, String pass) {
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "update Customer set passWord = ? where userName = ? ";
+		
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, pass);
+			ps.setString(2, userName);
+			ps.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
 }
