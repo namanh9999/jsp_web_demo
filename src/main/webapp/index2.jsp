@@ -32,6 +32,8 @@
 <%
 // get web's url
 String ss = session.getAttribute("session") + "";
+
+System.out.println("this is session on index file " + ss);
 String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 		+ request.getContextPath();
 System.out.println(url);

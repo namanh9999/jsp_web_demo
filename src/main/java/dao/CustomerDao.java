@@ -83,6 +83,41 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return cs;
 	}
 
+	public Customer selectByUserName(String userName) {
+		Customer cs = null;
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select * from Customer where customerID = ?";
+
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, userName);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String customerID = rs.getString("customerID");
+				String passWord = rs.getString("passWord");
+				String fullName = rs.getString("fullName");
+				String gender = rs.getString("gender");
+				String address = rs.getString("address");
+				String deliAddress = rs.getString("deliAddress");
+				String shipAddress = rs.getString("shipAddress");
+				String buyAddress = rs.getString("buyAddress");
+				Date birth = rs.getDate("birth");
+				String phoneNumber = rs.getString("phoneNumber");
+				String email = rs.getString("email");
+				boolean emailRegister = rs.getBoolean("emailRegister");
+				cs = new Customer(customerID, userName, passWord, fullName, gender, address, deliAddress, shipAddress,
+						buyAddress, birth, phoneNumber, email, emailRegister);
+				break;
+			}
+
+			JDBCUtil.closeConnection(conn);
+			return cs;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return cs;
+	}
+
 
 	public int insert(Customer t) {
 		int result = 0;
@@ -94,7 +129,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 			ps.setString(2, t.getUserName());
 			ps.setString(3, t.getPassWord());
 			ps.setString(4, t.getFullName());
-			ps.setString(5, t.isGender());
+			ps.setString(5, t.getGender());
 			ps.setString(6, t.getAddress());
 			ps.setString(7, t.getDeliAddress());
 			ps.setString(8, t.getShipAddress());
@@ -157,7 +192,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 			ps.setString(1, t.getUserName());
 			ps.setString(2, t.getPassWord());
 			ps.setString(3, t.getFullName());
-			ps.setString(4, t.isGender());
+			ps.setString(4, t.getGender());
 			ps.setString(5, t.getAddress());
 			ps.setString(6, t.getDeliAddress());
 			ps.setString(7, t.getShipAddress());

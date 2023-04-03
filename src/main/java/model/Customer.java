@@ -71,7 +71,7 @@ public class Customer {
 		this.fullName = fullName;
 	}
 
-	public String isGender() {
+	public String getGender() {
 		return gender;
 	}
 

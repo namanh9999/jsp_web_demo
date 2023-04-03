@@ -42,18 +42,21 @@ public class changePass extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+
+		HttpSession session = request.getSession();
 		String url = "";
 		String oldPass = request.getParameter("oldPass");
 		oldPass = new Encryption().toSHA1(oldPass);
 		String newPass = request.getParameter("newPass");
 		String confirm = request.getParameter("confirm");
 
+		String temp = new Encryption().toSHA1(confirm);
 		String e_oldPass = "";
 		String e_confirm = "";
 		CustomerDao cs = new CustomerDao();
-		
+
 		try {
-			
+
 			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -62,21 +65,31 @@ public class changePass extends HttpServlet {
 		if (!cs.passCheck(oldPass) == true) {
 			e_oldPass += "Password not match";
 			request.setAttribute("e_oldPass", e_oldPass);
-			url="/changePassword.jsp";
+			url = "/changePassword.jsp";
+
+			System.out.println("in old pass check ");
 		} else {
 			if (newPass.equals(confirm)) {
-				HttpSession session = request.getSession();
-				String userName = (String) session.getAttribute("userName");
-				System.out.println("username on changePass ( svl ) "+userName);
-				String temp = new Encryption().toSHA1(confirm);
-				System.out.println(temp);
-				cs.updatePassword(userName, temp);
-				session.invalidate();
-				url="/index2.jsp";
+				if (!oldPass.equals(temp)) {
+					System.out.println("in new and old passcheck  ");
+					String userName = (String) session.getAttribute("userName");
+					System.out.println("username on changePass ( svl ) " + userName);
+					System.out.println("new pass");
+					System.out.println(temp);
+					System.out.println("old pass");
+					System.out.println(oldPass);
+					cs.updatePassword(userName, temp);
+					session.invalidate();
+					url = "/sellingPage.jsp";
+				} else {
+					e_oldPass += "New password at the same old password";
+					request.setAttribute("e_oldPass", e_oldPass);
+					url = "/changePassword.jsp";
+				}
 			} else {
 				e_confirm += "Password not match";
 				request.setAttribute("e_confirm", e_confirm);
-				url="/changePassword.jsp";
+				url = "/changePassword.jsp";
 			}
 		}
 		RequestDispatcher rs = getServletContext().getRequestDispatcher(url);

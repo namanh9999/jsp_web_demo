@@ -17,17 +17,28 @@
 }
 </style>
 </head>
+
+<body class="my-login-page">
 <%
-String ss = request.getSession() + "";
+
+String ss = session.getAttribute("userName") + "";
+System.out.print("This is " + ss);
+
 String e_oldPass = request.getAttribute("e_oldPass") + "";
 e_oldPass = e_oldPass.equals("null") ? "" : e_oldPass;
 
 String e_confirm = request.getAttribute("e_confirm") + "";
 e_confirm = e_confirm.equals("null") ? "" : e_confirm;
 
-%>
 
-<body class="my-login-page">
+if(ss.equals("null")){
+%>		
+<h1>You have to Login fist</h1>
+<h4>Click here to turn around login page</h4>
+<a href="/index2.jsp"><button class="btn-ouline-primary">Login Page</button></a>
+ <% } else { %>
+
+<div>
 	<section class="h-100">
 		<div class="container h-100">
 			<div class="row justify-content-md-center h-100">
@@ -47,7 +58,7 @@ e_confirm = e_confirm.equals("null") ? "" : e_confirm;
 										type="password" class="form-control" name="oldPass" required
 										autofocus>
 									<div class="invalid-feedback">Password not match</div>
-									<span class="rq"><%=e_oldPass%></span>
+									<span class="rq"><%=e_oldPass %></span>
 								</div>
 								<div class="form-group">
 									<label for="password">New Password </label> <input
@@ -59,9 +70,8 @@ e_confirm = e_confirm.equals("null") ? "" : e_confirm;
 									<label for="password">Confirm Password </label> <input
 										id="password" type="password" class="form-control"
 										name="confirm" required data-eye onkeyup="passwordCheck()">
-
 									<div class="invalid-feedback">Password is required</div>
-									<span class="rq" ><%=e_confirm%></span>
+									<span class="rq"><%=e_confirm %></span>
 								</div>
 								<div class="form-group m-0">
 									<button type="submit" class="btn btn-primary btn-block">
@@ -78,7 +88,9 @@ e_confirm = e_confirm.equals("null") ? "" : e_confirm;
 			</div>
 		</div>
 	</section>
+</div>
 
+<% }%>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		crossorigin="anonymous"></script>

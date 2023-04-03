@@ -35,7 +35,8 @@
 	<%
 	String ss = session.getAttribute("userName") + "";
 
-	System.out.print(ss);
+
+	System.out.println("this is user Name" + ss);
 	%>
 	<div class="hero">
 		<video autoplay loop muted class="back-video">
@@ -60,6 +61,9 @@
 
 				<li id="signIn"><a href="changePassword.jsp">Change
 						password</a></li>
+				<li id="signIn" ><a href="changeInfor.jsp">Change Infor</a></li>
+
+				<li id="signIn" ><button class="btn-outline-primary">Logout</button></li>
 				<%
 				}
 				%>
@@ -82,7 +86,7 @@
 					<img src="img/index3.jpg" class="d-block w-100" alt="...">
 				</div>
 				<div class="carousel-item">
-					<img src="img/index4.jpg "class="d-block w-100" alt="...">
+					<img src="img/index4.jpg " class="d-block w-100" alt="...">
 				</div>
 			</div>
 			<button class="carousel-control-prev" type="button"
