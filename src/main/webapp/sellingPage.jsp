@@ -63,7 +63,7 @@
 						password</a></li>
 				<li id="signIn" ><a href="changeInfor.jsp">Change Infor</a></li>
 
-				<li id="signIn" ><button class="btn-outline-primary">Logout</button></li>
+				<li id="signIn" > <button class="btn-outline-primary">Logout</button></li>
 				<%
 				}
 				%>

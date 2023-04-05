@@ -1,3 +1,4 @@
+<%@page import="java.sql.Date"%>
 <%@page import="dao.CustomerDao"%>
 <%@page import="model.Customer"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
@@ -19,42 +20,66 @@
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="css/my-login.css">
+<link href="img">
 </head>
 
-<body class="my-login-page">
-
+<body class="my-login-page" style="background-image: url('img/index2.jpg');">
 	<%
-	
-	String e_email = request.getAttribute("e_email") + "";
-	e_email = (e_email.equals("null") ? "" : e_email);
+	String userName = session.getAttribute("userName") + "";
 
-	String e_userName = request.getAttribute("e_userName") + "";
-	e_userName = e_userName.equals("null") ? "" : e_userName;
+	if (!userName.equals("null")) {
+		String emailRegister = "";
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
 
+		}
+		Customer cs = new CustomerDao().selectByUserName(userName);
+		String email = cs.getEmail();
+		String fullName = cs.getFullName();
+		String address = cs.getAddress();
+		String gender = cs.getGender();
+		String phoneNumber = cs.getPhoneNumber();
+		String deliAddress = cs.getDeliAddress();
+		String shipAddress = cs.getShipAddress();
+		String buyAddress = cs.getBuyAddress();
+		Date date = cs.getBirth();
+		String birth = String.valueOf(date);
+		boolean emailRegis = cs.isEmailRegister();
 
-	String userName = request.getAttribute("userName") + "";
-	userName = userName.equals("null") ? "" : userName;
-	String fullName = request.getAttribute("fullName") + "";
-	fullName = fullName.equals("null") ? "" : fullName;
-	String gender = request.getAttribute("gender") + "";
-	gender = gender.equals("null") ? "" : gender;
-	String address = request.getAttribute("address") + "";
-	address = address.equals("null") ? "" : address;
-	String deliAddress = request.getAttribute("deliAddress") + "";
-	deliAddress = deliAddress.equals("null") ? "" : deliAddress;
-	String shipAddress = request.getAttribute("shipAddress") + "";
-	shipAddress = shipAddress.equals("null") ? "" : shipAddress;
-	String buyAddress = request.getAttribute("buyAddress") + "";
-	buyAddress = buyAddress.equals("null") ? "" : buyAddress;
-	String birth = request.getAttribute("birth") + "";
-	birth = birth.equals("null") ? "" : birth;
-	String phoneNumber = request.getAttribute("phoneNumber") + "";
-	phoneNumber = phoneNumber.equals("null") ? "" : phoneNumber;
-	String email = request.getAttribute("email") + "";
-	email = email.equals("null") ? "" : email;
-	String emailRegister = request.getAttribute("emailRegister") + "";
-	emailRegister = emailRegister.equals("null") ? "" : emailRegister;
+		if (emailRegis == true) {
+			emailRegister = "on";
+		}
 
+		String e_email = request.getAttribute("e_email") + "";
+		e_email = (e_email.equals("null") ? "" : e_email);
+		/*
+		String e_userName = request.getAttribute("e_userName") + "";
+		e_userName = e_userName.equals("null") ? "" : e_userName;
+			
+		String fullName = request.getAttribute("fullName") + "";
+		fullName = fullName.equals("null") ? "" : fullName;
+		String gender = request.getAttribute("gender") + "";
+		gender = gender.equals("null") ? "" : gender;
+		String address = request.getAttribute("address") + "";
+		address = address.equals("null") ? "" : address;
+		String deliAddress = request.getAttribute("deliAddress") + "";
+		deliAddress = deliAddress.equals("null") ? "" : deliAddress;
+		String shipAddress = request.getAttribute("shipAddress") + "";
+		shipAddress = shipAddress.equals("null") ? "" : shipAddress;
+		String buyAddress = request.getAttribute("buyAddress") + "";
+		buyAddress = buyAddress.equals("null") ? "" : buyAddress;
+		String birth = request.getAttribute("birth") + "";
+		birth = birth.equals("null") ? "" : birth;
+		String phoneNumber = request.getAttribute("phoneNumber") + "";
+		phoneNumber = phoneNumber.equals("null") ? "" : phoneNumber;
+		String email = request.getAttribute("email") + "";
+		email = email.equals("null") ? "" : email;
+		String emailRegister = request.getAttribute("emailRegister") + "";
+		emailRegister = emailRegister.equals("null") ? "" : emailRegister;
+		
+			*/
 	%>
 	<section class="h-100">
 		<div class="container h-100">
@@ -69,18 +94,10 @@
 							<h2 class="card-title" align="center">Change Information</h2>
 
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="registerControl">
+								action="changeInfor">
 
 								<div class="row">
 									<div class="col-sm-6">
-										<div class="form-group">
-											<label for="userName">User Name</label> <input id="userName"
-												type="text" class="form-control" name="userName"
-												value="<%=userName%>" required autofocus> <span
-												class="rq"><%=e_userName%></span>
-											<div class="invalid-feedback">What's your UserName?</div>
-										</div>
-
 										<div class="form-group">
 											<label for="emailAddress">E-Mail Address</label> <input
 												id="emailAddress" type="email" class="form-control"
@@ -116,7 +133,16 @@
 												autofocus>
 											<div class="invalid-feedback">What's your UserName?</div>
 										</div>
+										<div class="form-group">
+											<div class="form-check form-switch">
+												<input class="form-check-input" type="checkbox"
+													role="switch" id="emailRegister" name="emailRegister"
+													<%=(emailRegister.equals("on")) ? "checked='checked'" : ""%>>
+												<label class="form-check-label" for="flexSwitchCheckDefault">I
+													agree using this email to received discount and announce </label>
+											</div>
 
+										</div>
 
 									</div>
 
@@ -158,34 +184,37 @@
 
 											<div class="invalid-feedback">When your birth day</div>
 										</div>
-
-
 									</div>
 
 								</div>
-								<div class="form-group">
-									<div class="form-check form-switch">
-										<input class="form-check-input" type="checkbox" role="switch"
-											id="emailRegister" name="emailRegister"
-											<%=(emailRegister.equals("on")) ? "checked='checked'" : ""%>>
-										<label class="form-check-label" for="flexSwitchCheckDefault">I
-											agree using this email to received discount and announce </label>
-									</div>
 
-								</div>
 
 								<div class="form-group m-0">
 									<button type="submit" class="btn btn-outline-primary btn-block">
 										Confirm</button>
 								</div>
-								<div class="mt-4 text-center">
-									If you want to change password <br> <a
-										href="/changePassword.jsp">
-										<button type="button" class="btn btn-outline-primary">Change
-											Password</button>
-									</a>
-								</div>
 							</form>
+							<div class="container text-center">
+								<div class="row align-items-center">
+									<div class="col">
+										If you want to change password <br> <a
+											href="changePassword.jsp">
+											<button type="button" class="btn btn-outline-primary">Change
+												Password</button>
+										</a>
+									</div>
+									<div class="col">
+										Back to selling page<br> <a href="sellingPage.jsp">
+											<button type="button" class="btn btn-outline-primary">Selling
+												page</button>
+										</a>
+
+									</div>
+								</div>
+
+
+
+							</div>
 						</div>
 					</div>
 				</div>
@@ -201,5 +230,17 @@
 		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
 		crossorigin="anonymous"></script>
 	<script src="js/my-login.js"></script>
+
+	<%} else {%>
+	<div style="background-image: url('img/index2.jpg');">
+		<h1>You must be login first</h1>
+		<a href="sellingPage.jsp"><button class="btn-outsite-primary ">
+				Click here</button> </a>
+	</div>
+
+	<%
+	}
+	%>
+
 </body>
 </html>

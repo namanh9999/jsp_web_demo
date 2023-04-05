@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+import java.sql.Date;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -42,8 +43,8 @@ public class changeInfor extends HttpServlet {
 			throws ServletException, IOException {
 
 		HttpSession session = request.getSession();
-		String userID = session.getAttribute("userName") + "";
-		System.out.println("this is user ID in changeInfor Control");
+		String userName = session.getAttribute("userName") + "";
+		System.out.println("this is user ID in changeInfor Control" + userName);
 		String url = "";
 		try {
 			Class.forName("com.mysql.cj.jdbc.Driver");
@@ -51,31 +52,27 @@ public class changeInfor extends HttpServlet {
 			e.printStackTrace();
 		}
 
-		if (!session.equals(null)) {
-			Customer cs = new CustomerDao().selectByUserName(userID);
-			String userName = cs.getUserName();
-			request.setAttribute("userName",userName);
-			String emailAddress = cs.getEmail();
-			request.setAttribute("email",emailAddress);
-			String fullName = cs.getFullName();
-			request.setAttribute("fullName",fullName);
-			String gender = cs.getGender();
-			request.setAttribute("Gender",gender);
-			String phoneNumber = cs.getPhoneNumber();
-			request.setAttribute("phoneNumber",phoneNumber );
-			String address = cs.getAddress();
-			request.setAttribute("address",address);
-			String deliAddress = cs.getDeliAddress();
-			request.setAttribute("deliAddress",deliAddress);
-			String shipAddress = cs.getShipAddress();
-			request.setAttribute("shipAddress",shipAddress );
-			String birth = String.valueOf(cs.getBirth());
-			request.setAttribute("birth", birth);
-			boolean emailRegister = cs.isEmailRegister();
-			request.setAttribute("emailRegister",emailRegister);
+		if (!userName.equals("null")) {
+			String userID =  CustomerDao.getInstance().selectByUserName(userName).getCustomerID();
+			String password = CustomerDao.getInstance().selectByUserName(userName).getPassWord();
+			String email = request.getParameter("emailAddress");
+			String fullName = request.getParameter("fullName");
+			String gender = request.getParameter("Gender");
+			String phoneNumber = request.getParameter("phoneNumber");
+			String address = request.getParameter("address");
+			String deliAddress = request.getParameter("deliAddress");
+			String shipAddress = request.getParameter("shipAddress");
+			String buyAddress = request.getParameter("buyAddress");
+			String birth = String.valueOf(request.getParameter("birth"));
+			String emailRegi = request.getParameter("emailRegister");
+			boolean emailRegister = false;
+			if (emailRegi.equals("on")) {
+				emailRegister = true;
+			}
+			Customer cs = new Customer(userID, userName, password, fullName, gender, address, deliAddress, shipAddress, buyAddress, Date.valueOf(birth), phoneNumber, email, emailRegister);
+			CustomerDao.getInstance().update(cs);
+
 			url = "/changeInfor.jsp";
-		} else {
-			url = "/index2.jsp";
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);

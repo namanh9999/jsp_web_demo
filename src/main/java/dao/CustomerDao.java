@@ -86,7 +86,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 	public Customer selectByUserName(String userName) {
 		Customer cs = null;
 		Connection conn = JDBCUtil.getConnection();
-		String sql = "select * from Customer where customerID = ?";
+		String sql = "select * from Customer where userName = ?";
 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
