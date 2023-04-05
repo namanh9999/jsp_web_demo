@@ -47,7 +47,8 @@ if(ss.equals("null")){
 						<img src="img/logo.jpg" alt="logo">
 					</div>
 
-					<form action="changePass" method="POSt"></form>
+					<form action="../CustomerController" method="POST"></form>
+					<input type="hidden" name="action" value="changePass">
 					<div class="card fat">
 						<div class="card-body">
 							<h4 class="card-title" align="center">Change Password</h4>

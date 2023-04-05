@@ -53,7 +53,8 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 						<div class="card-body">
 							<h4 class="card-title" align="center">Login</h4>
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="loginControl">
+								action="CustomerController">
+								<input type="hidden" name="action" value="login">
 								<div class="form-group">
 									<label for="userName">User Name</label> <input id="email"
 										type="text" class="form-control" name="userName" required

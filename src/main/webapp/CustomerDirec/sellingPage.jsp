@@ -59,11 +59,11 @@
 				} else {
 				%>
 
-				<li id="signIn"><a href="changePassword.jsp">Change
+				<li id="signIn"><a href="CustomerDirec/changePassword.jsp">Change
 						password</a></li>
-				<li id="signIn" ><a href="changeInfor.jsp">Change Infor</a></li>
+				<li id="signIn" ><a href="CustomerDirec/changeInfor.jsp">Change Infor</a></li>
 
-				<li id="signIn" > <button class="btn-outline-primary">Logout</button></li>
+				<li id="signIn" ><a href="CustomerController?action=logout">Logout</a></li>
 				<%
 				}
 				%>
