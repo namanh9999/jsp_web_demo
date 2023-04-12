@@ -21,10 +21,15 @@
 	crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="css/my-login.css">
 <link href="img">
+<link href="HeadAndFooter">
+
 </head>
 
 <body class="my-login-page"
-	style="background-image: url('img/index2.jpg');">
+<%
+String url = request.getScheme() + "://" + request.getServerName()+":" + request.getServerPort() + request.getContextPath();
+%>
+	style="background-image: url('<%=url%>/img/index2.jpg');">
 	<%
 	String userName = session.getAttribute("userName") + "";
 
@@ -88,14 +93,13 @@
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
 					<div class="brand">
-						<img src="img/logo.jpg" alt="bootstrap 4 login page">
 					</div>
 					<div class="card fat">
 						<div class="card-body">
 							<h2 class="card-title" align="center">Change Information</h2>
 
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="../CustomerController">
+								action="<%=url %>/CustomerController">
 
 								<input type="hidden" name="action" value="changeInfor">
 								<div class="row">
@@ -200,13 +204,13 @@
 								<div class="row align-items-center">
 									<div class="col">
 										If you want to change password <br> <a
-											href="CustomerDirec/changePassword.jsp">
+											href="<%=url %>CustomerDirec/changePassword.jsp">
 											<button type="button" class="btn btn-outline-primary">Change
 												Password</button>
 										</a>
 									</div>
 									<div class="col">
-										Back to selling page<br> <a href="sellingPage.jsp">
+										Back to selling page<br> <a href="<%=url %>/sellingPage.jsp">
 											<button type="button" class="btn btn-outline-primary">Selling
 												page</button>
 										</a>
@@ -214,9 +218,8 @@
 									</div>
 								</div>
 
-
-
 							</div>
+
 						</div>
 					</div>
 				</div>
@@ -236,8 +239,8 @@
 	<%} else {%>
 	<div style="background-image: url('img/index2.jpg');">
 		<h1>You must be login first</h1>
-		<a href="/CustomerDirec/sellingPage.jsp"><button class="btn-outsite-primary ">
-				Click here</button> </a>
+		<a href="/CustomerDirec/sellingPage.jsp"><button
+				class="btn-outsite-primary ">Click here</button> </a>
 	</div>
 
 	<%

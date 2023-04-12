@@ -2,6 +2,7 @@ package controller;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,9 +14,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import Util.EmailProcess;
 import Util.Encryption;
 import dao.CustomerDao;
+import dao.VerifyDao;
 import model.Customer;
+import model.Verify;
 
 /**
  * Servlet implementation class CustomerController
@@ -50,8 +54,14 @@ public class CustomerController extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		String action = request.getParameter("action");
-		if (action.equals("changePass")) {
+		System.out.println(action);
+		if (action.equals("changePassInfor")) {
 			ChangePassword(request, response);
 		} else if (action.equals("changeInfor")) {
 			ChangeInfor(request, response);
@@ -59,47 +69,37 @@ public class CustomerController extends HttpServlet {
 			Register(request, response);
 		} else if (action.equals("login")) {
 			LogIn(request, response);
+		} else if (action.equals("saveInfor") || action.equals("changePass")) {
+			checkVerifyCode(request, response, action);
 		}
-
 	}
 
 	private void LogOut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		String url = "";
-			HttpSession session = request.getSession();
-			session.invalidate();
-			url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-					+ request.getContextPath() + "/index2.jsp";
-			System.out.println(url);
-			response.sendRedirect(url);
+		HttpSession session = request.getSession();
+		session.invalidate();
+		url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+				+ request.getContextPath() + "/index2.jsp";
+		System.out.println(url);
+		response.sendRedirect(url);
 
 	}
 
 	private void LogIn(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String url = "";
 
-		HttpSession session = null;
-		session = request.getSession();
-		System.out.println("this is session 1  : " + session);
+		HttpSession session = request.getSession();
 		String e_userName = "";
 		String userName = request.getParameter("userName");
 		System.out.println(userName);
 		session.setAttribute("userName", userName);
-		System.out.println("This is session 2 \" userName 2 \" " + session.getAttribute("userName"));
-		request.setAttribute("session", session);
 		String password = request.getParameter("password");
-		System.out.println(password);
 		password = new Encryption().toSHA1(password);
-
-		System.out.println(password);
 		CustomerDao cs = new CustomerDao();
 
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		if (cs.userNameCheck(userName, password) == true) {
-			url = "/CustomerDirec/sellingPage.jsp";
+			session.setAttribute("userID", cs.selectByUserName(userName).getCustomerID());
+			url = "/sellingPage.jsp";
 		} else {
 			url = "/index2.jsp";
 			e_userName = "User name or password not match";
@@ -127,7 +127,7 @@ public class CustomerController extends HttpServlet {
 			String password = CustomerDao.getInstance().selectByUserName(userName).getPassWord();
 			String email = request.getParameter("emailAddress");
 			String fullName = request.getParameter("fullName");
-			String gender = request.getParameter("Gender");
+			String gender = request.getParameter("gender");
 			String phoneNumber = request.getParameter("phoneNumber");
 			String address = request.getParameter("address");
 			String deliAddress = request.getParameter("deliAddress");
@@ -143,78 +143,24 @@ public class CustomerController extends HttpServlet {
 					buyAddress, Date.valueOf(birth), phoneNumber, email, emailRegister);
 			CustomerDao.getInstance().update(cs);
 
-			url = "CustomerDirec/changeInfor.jsp";
+			url = "/CustomerDirec/changeInfor.jsp";
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
 
 	}
 
-	private void ChangePassword(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		String url = "";
-		String oldPass = request.getParameter("oldPass");
-		oldPass = new Encryption().toSHA1(oldPass);
-		String newPass = request.getParameter("newPass");
-		String confirm = request.getParameter("confirm");
-
-		String temp = new Encryption().toSHA1(confirm);
-		String e_oldPass = "";
-		String e_confirm = "";
-		CustomerDao cs = new CustomerDao();
-
-		try {
-
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (!cs.passCheck(oldPass) == true) {
-			e_oldPass += "Password not match";
-			request.setAttribute("e_oldPass", e_oldPass);
-			url = "/CustomerDirec/changePassword.jsp";
-
-			System.out.println("in old pass check ");
-		} else {
-			if (newPass.equals(confirm)) {
-				if (!oldPass.equals(temp)) {
-					System.out.println("in new and old passcheck  ");
-					String userName = (String) session.getAttribute("userName");
-					System.out.println("username on changePass ( svl ) " + userName);
-					System.out.println("new pass");
-					System.out.println(temp);
-					System.out.println("old pass");
-					System.out.println(oldPass);
-					cs.updatePassword(userName, temp);
-					session.invalidate();
-					url = "/CustomerDirec/sellingPage.jsp";
-				} else {
-					e_oldPass += "New password at the same old password";
-					request.setAttribute("e_oldPass", e_oldPass);
-					url = "/CustomerDirec/changePassword.jsp";
-				}
-			} else {
-				e_confirm += "Password not match";
-				request.setAttribute("e_confirm", e_confirm);
-				url = "/CustomerDirec/changePassword.jsp";
-			}
-		}
-		RequestDispatcher rs = getServletContext().getRequestDispatcher(url);
-		rs.forward(request, response);
-
-	}
-
 	private void Register(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		String verifyCode = createVerifyCode();
 
 		String url = "";
 		String userName = request.getParameter("userName").trim();
 		String passWord = request.getParameter("password").trim();
 		String rePassWord = request.getParameter("rePassword").trim();
 		String fullName = request.getParameter("fullName").trim();
-		String gender = request.getParameter("Gender");
+		String gender = request.getParameter("gender");
 		String address = request.getParameter("address").trim();
 		String deliAddress = request.getParameter("deliAddress").trim();
 		String shipAddress = request.getParameter("shipAddress").trim();
@@ -226,6 +172,7 @@ public class CustomerController extends HttpServlet {
 
 		String e_userName = "";
 		String e_Repassword = "";
+		String e_gender = "";
 
 		request.setAttribute("userName", userName);
 		request.setAttribute("fullName", fullName);
@@ -246,21 +193,13 @@ public class CustomerController extends HttpServlet {
 		Matcher emailMatcher = emailPattern.matcher(email);
 		boolean emailCheck = emailMatcher.matches();
 		boolean passwordMatch = passWord.equals(rePassWord);
-/////
-		try {
-
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-/////
 
 		// boolean uNCheck= this.useNameCheck(this.getConnection(), userName);
 
 		CustomerDao cs = new CustomerDao();
 
 		if (cs.userNameCheck(userName) == true) {
-			e_userName += "User name already exist, Please choose new user name <_> ";
+			e_userName = "User name already exist, Please choose new user name <_> ";
 			request.setAttribute("e_userName", e_userName);
 			url = "/CustomerDirec/register.jsp";
 		} else if (passwordMatch == false) {
@@ -270,23 +209,152 @@ public class CustomerController extends HttpServlet {
 		} else if (emailCheck != true) {
 			request.setAttribute("e_email", "Email not exist or not true");
 			url = "/CustomerDirec/register.jsp";
+		} else if (gender == null) {
+			e_gender = "Please select your gender";
+			request.setAttribute("e_gender", e_gender);
+			url = "/CustomerDirec/register.jsp";
 		} else {
-			url = "/index2.jsp";
 			boolean temp = false;
-			if (emailRegister.equals("on")) {
+			if (emailRegister == null) {
+				temp = false;
+			} else {
 				temp = true;
 			}
-
 			passWord = new Encryption().toSHA1(passWord);
 			Date date = Date.valueOf(birth);
 			Random rd = new Random();
 			String userID = (String) userName + rd.nextInt(1000, 9999);
 			Customer cm = new Customer(userID, userName, passWord, fullName, gender, address, deliAddress, shipAddress,
 					buyAddress, date, phoneNumber, email, temp);
-			cs.insert(cm);
+			session.setAttribute("customerID", userID);
+			session.setAttribute("CustomerInfor", cm);
+			session.setAttribute("verifyCode", verifyCode);
+			session.setAttribute("action", "saveInfor");
+			EmailProcess emp = new EmailProcess();
+			String content = createContent("register account", verifyCode);
+			String subject = "Bug Company verify Code";
+			emp.sendEmail(email, content, subject);
+			url = "/CustomerDirec/verifyCode.jsp";
+			System.out.println(url);
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
+	}
+
+	private void ChangePassword(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		HttpSession session = request.getSession();
+		String url = "";
+		String confirmPass;
+		String oldPass = request.getParameter("oldPass");
+		oldPass = new Encryption().toSHA1(oldPass);
+		String newPass = request.getParameter("newPass");
+		String temp = request.getParameter("confirm");
+		 confirmPass = new Encryption().toSHA1(temp);
+		String e_oldPass = "";
+		String e_confirm = "";
+		CustomerDao cs = new CustomerDao();
+		if (!cs.passCheck(oldPass) == true) {
+			System.out.println("This is oldpass check ! true");
+			e_oldPass += "Password not match";
+			request.setAttribute("e_oldPass", e_oldPass);
+			url = "/CustomerDirec/changePassword.jsp";
+		}
+		if (!newPass.equals(temp)) {
+			System.out.println("This is oldpass check ");
+			e_confirm += "Password not match";
+			request.setAttribute("e_confirm", e_confirm);
+			url = "/CustomerDirec/changePassword.jsp";
+		} else {
+			System.out.println("This is newpass = confirm ");
+			if (!oldPass.equals(temp)) {
+				String userName = (String) session.getAttribute("userName");
+				EmailProcess ep = new EmailProcess();
+				String email = cs.selectByUserName(userName).getEmail();
+				String verifyCode = createVerifyCode();
+				session.setAttribute("userName", userName);
+				session.setAttribute("confirmPass", confirmPass);
+				session.setAttribute("verifyCode", verifyCode);
+				session.setAttribute("action", "changePass");
+				String contents = createContent("change password", verifyCode);
+				ep.sendEmail(email, contents, "Verify code for change for password");
+				System.out.println("there is Change Pass function");
+				url = "/CustomerDirec/verifyCode.jsp";
+			} else {
+				e_oldPass += "New password at the same old password";
+				request.setAttribute("e_oldPass", e_oldPass);
+				url = "/CustomerDirec/changePassword.jsp";
+			}
+		}
+
+		RequestDispatcher rs = getServletContext().getRequestDispatcher(url);
+		rs.forward(request, response);
+
+	}
+
+	private void checkVerifyCode(HttpServletRequest request, HttpServletResponse response, String action)
+			throws ServletException, IOException {
+		String url = "";
+		String e_verifyCode = "";
+		HttpSession session = request.getSession();
+		String codeCheck = String.valueOf(session.getAttribute("verifyCode"));
+		System.out.println("Code check" + codeCheck);
+		String code = request.getParameter("verifyCode");
+		System.out.println("Code" + code);
+		if (codeCheck.equals(code)) {
+			CustomerDao cmd = new CustomerDao();
+			Customer cm = cmd.selectByID(session.getAttribute("userID")+"");
+			System.out.print(cm.toString());
+			Date lastTime = createDate();
+			VerifyDao vd = new VerifyDao();
+			if (action.equals("saveInfor")) {
+				cmd.insert(cm);
+				Verify verify = new Verify(cm, lastTime, lastTime, code, true, "Register an account");
+				vd.insert(verify);
+				url = "/index2.jsp";
+				session.invalidate();
+			} else if (action.equals("changePass")) {
+				System.out.println("There is check Verify Code function");
+				System.out.println("Code" + code);
+				Date recently = vd.getLastDate(String.valueOf(session.getAttribute("userID")));
+				Verify verify = new Verify(cm, recently, lastTime, code, true, "Change password");
+				vd.update(verify);
+				String userName = session.getAttribute("userName") + "";
+				String confirmPass = session.getAttribute("confirmPass") + "";
+				cmd.updatePassword(userName, confirmPass);
+				url = "/index2.jsp";
+				session.invalidate();
+			}
+		} else {
+			e_verifyCode = "verify code not match. Re-enter or send again";
+			request.setAttribute("e_verifyCode", e_verifyCode);
+			url = "/CustomerDirec/vetifyCode.jsp";
+		}
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+		rd.forward(request, response);
+	}
+
+	private String createVerifyCode() {
+		Random rd = new Random();
+		String verifyCode = "";
+		for (int i = 1; i < 7; i++) {
+			verifyCode += String.valueOf(rd.nextInt(0, 9));
+		}
+		return verifyCode;
+	}
+
+	private Date createDate() {
+		Date date;
+		LocalDate now = LocalDate.now();
+		date = Date.valueOf(now);
+		return date;
+	}
+
+	private String createContent(String content, String verifyCode) {
+		String result = "<html>\n" + "<title>Bug Company</title>\n" + "<body>\n" + "    <div align=\"center\" >\n"
+				+ "<h1>Bug Company</h1>\n" + "<div>This is verify code for" + content + "<br> <strong>" + verifyCode
+				+ "</strong> </div>\n" + "</div>\n" + "</body>\n" + "</html>";
+		return result;
 	}
 
 }

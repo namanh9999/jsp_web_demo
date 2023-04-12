@@ -1,3 +1,5 @@
+<%@page import="java.sql.Date"%>
+<%@page import="java.util.Random"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -22,13 +24,16 @@
 <body class="my-login-page">
 
 	<%
+	String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ request.getContextPath();
 	String e_email = request.getAttribute("e_email") + "";
 	e_email = (e_email.equals("null") ? "" : e_email);
-
 	String e_userName = request.getAttribute("e_userName") + "";
 	e_userName = e_userName.equals("null") ? "" : e_userName;
 	String e_Repassword = request.getAttribute("e_Repassword") + "";
 	e_Repassword = e_Repassword.equals("null") ? "" : e_Repassword;
+	String e_gender = request.getAttribute("e_gender") + "";
+	e_gender = e_gender.equals("null") ? "" : e_gender;
 
 	String userName = request.getAttribute("userName") + "";
 	userName = userName.equals("null") ? "" : userName;
@@ -59,14 +64,14 @@
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
 					<div class="brand">
-						<img src="img/logo.jpg" alt="bootstrap 4 login page">
+						<img src="<%=url%>/img/logo.jpg" alt="bootstrap 4 login page">
 					</div>
 					<div class="card fat">
 						<div class="card-body">
 							<h2 class="card-title" align="center">Register</h2>
 
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="../CustomerController">
+								action="<%=url%>/CustomerController">
 								<input type="hidden" name="action" value="register">
 								<div class="row">
 									<div class="col-sm-6">
@@ -111,16 +116,19 @@
 										<label>Gender</label>
 										<div class="form-group radio-check">
 											<div>
-												<input type="radio" name="Gender" value="Men"
+												<input type="radio" name="gender" value="Men"
 													<%=(gender.equals("Men")) ? "checked='checked'" : ""%>
 													id="male"> <label for="male">Men</label>
 											</div>
 											<div>
-												<input type="radio" name="Gender" value="Women"
+												<input type="radio" name="gender" value="Women"
 													<%=(gender.equals("Women")) ? "checked='checked'" : ""%>
 													id="female"> <label for="female">Women</label>
 											</div>
+
 										</div>
+
+										<span class="rq"><%=e_gender%></span>
 
 									</div>
 
@@ -171,9 +179,7 @@
 												autofocus>
 											<div class="invalid-feedback">What's your UserName?</div>
 										</div>
-
 									</div>
-
 								</div>
 								<div class="form-group">
 									<div class="form-check form-switch">
@@ -195,11 +201,11 @@
 								</div>
 
 								<div class="form-group m-0">
-									<button type="submit" class="btn btn-primary btn-block">
-										Register</button>
+									<button onclick="checkRadioButton()"
+										class="btn btn-primary btn-block">Register</button>
 								</div>
 								<div class="mt-4 text-center">
-									Already have an account? <a href="index2.jsp">Login</a>
+									Already have an account? <a href="<%=url%>/index2.jsp">Login</a>
 								</div>
 							</form>
 						</div>

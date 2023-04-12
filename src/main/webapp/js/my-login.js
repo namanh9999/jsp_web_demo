@@ -86,3 +86,14 @@ $(function() {
 		form.addClass('was-validated');
 	});
 });
+function checkRadioButton() {
+  // Get the first radio button by its ID
+  var male = document.getElementById("male");
+  var female = document.getElementById("female");
+	var genderMessage = document.getElementById("gender-message");
+  // Check if the first radio button is already selected
+  if (!male.checked && female.checked) {
+	  genderMessage.style.display= "block";
+  }
+}
+

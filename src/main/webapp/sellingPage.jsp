@@ -24,19 +24,21 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-<link rel="stylesheet" href="/img">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 
-<script type="text/javascript">
-	
-</script>
+<style type="text/css">
+.font {
+	color: #fffff;
+}
+</style>
+
 </head>
 <body>
 	<%
 	String ss = session.getAttribute("userName") + "";
-
-
 	System.out.println("this is user Name" + ss);
+	String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+			+ request.getContextPath();
 	%>
 	<div class="hero">
 		<video autoplay loop muted class="back-video">
@@ -45,25 +47,27 @@
 		<nav>
 			<img alt="logo" src="img/401-logo.png" class="logo">
 			<ul>
-				<li><a href="#">Home</a></li>
-				<li><a href="#">Fashion</a></li>
-				<li><a href="#">Contact Us</a></li>
-				<li><a
+				<li class="font"><a href="#" class="font">Home</a></li>
+				<li class="font"><a href="#">Fashion</a></li>
+				<li class="font"><a href="#">Contact Us</a></li>
+				<li class="font"><a
 					href="https://www.facebook.com/profile.php?id=100086915034670">Author</a></li>
 				<%
 				if (ss.equals("null")) {
 				%>
-				<li id="signUp"><a href="register.jsp">Sign Up</a></li>
-				<li id="signIn"><a href="index2.jsp">Sign In</a></li>
+				<li id="signUp"><a href="<%=url%>/CustomerDirec/register.jsp">Sign
+						Up</a></li>
+				<li id="signIn"><a href="<%=url%>/index2.jsp">Sign In</a></li>
 				<%
 				} else {
 				%>
 
-				<li id="signIn"><a href="CustomerDirec/changePassword.jsp">Change
+				<li id="signIn"><a href="<%=url%>/CustomerDirec/changePassword.jsp">Change
 						password</a></li>
-				<li id="signIn" ><a href="CustomerDirec/changeInfor.jsp">Change Infor</a></li>
+				<li id="signIn"><a href="<%=url%>/CustomerDirec/changeInfor.jsp">Change
+						Infor</a></li>
 
-				<li id="signIn" ><a href="CustomerController?action=logout">Logout</a></li>
+				<li id="signIn"><a href="<%=url%>/CustomerController?action=logout">Logout</a></li>
 				<%
 				}
 				%>
@@ -101,7 +105,9 @@
 			</button>
 		</div>
 	</div>
-
+	<div>
+		<%@ include file="footer.jsp"%>
+	</div>
 
 </body>
 

@@ -12,6 +12,7 @@
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
 <link rel="stylesheet" type="text/css" href="css/my-login.css">
+
 <style type="text/css">
 .rq {
 	color: red;
@@ -37,11 +38,14 @@ System.out.println("this is session on index file " + ss);
 String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 		+ request.getContextPath();
 System.out.println(url);
+
+String userName = session.getAttribute("userName") + "";
+userName = userName.equals("null") ? "" : userName ;
 String e_userName = request.getAttribute("e_userName") + "";
 e_userName = (e_userName.equals("null") ? "" : e_userName);
 %>
 <body class="my-login-page">
-	<section class="h-100">
+	<section class="h-100" style="background-image: url('img/bg.jpg');">
 		<div class="container h-100">
 
 			<div class="row justify-content-md-center h-100">
@@ -54,12 +58,12 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 							<h4 class="card-title" align="center">Login</h4>
 							<form method="POST" class="my-login-validation" novalidate=""
 								action="CustomerController">
-								<input type="hidden" name="action" value="login">
-								<div class="form-group">
+								<input type="hidden" name="action" value="login"> 								<div class="form-group">
 									<label for="userName">User Name</label> <input id="email"
 										type="text" class="form-control" name="userName" required
-										autofocus>
-									<div class="invalid-feedback">Email is invalid</div>
+										value="<%=userName %>"
+										autofocus> 
+									<div class="invalid-feedback">userName is invalid</div>
 								</div>
 								<div class="form-group">
 									<label for="password">Password <a href="forgot.jsp"
@@ -86,10 +90,13 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 							</form>
 						</div>
 					</div>
-					<div class="footer">Copyright &copy; 2023 &mdash; BUG</div>
 				</div>
+
 			</div>
 		</div>
+
+		<%@ include file="footer.jsp"%>
+
 	</section>
 
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
