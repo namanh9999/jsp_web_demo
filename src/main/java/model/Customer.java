@@ -16,10 +16,10 @@ public class Customer {
 	private String phoneNumber;
 	private String email;
 	private boolean emailRegister;
+	private String avatarPath;
 
 	public Customer() {
 	}
-
 
 	public Customer(String customerID, String userName, String passWord, String fullName, String gender, String address,
 			String deliAddress, String shipAddress, String buyAddress, Date birth, String phoneNumber, String email,
@@ -37,6 +37,27 @@ public class Customer {
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.emailRegister = emailRegister;
+	}
+
+
+
+	public Customer(String customerID, String userName, String passWord, String fullName, String gender, String address,
+			String deliAddress, String shipAddress, String buyAddress, Date birth, String phoneNumber, String email,
+			boolean emailRegister, String avatarPath) {
+		this.customerID = customerID;
+		this.userName = userName;
+		this.passWord = passWord;
+		this.fullName = fullName;
+		this.gender = gender;
+		this.address = address;
+		this.deliAddress = deliAddress;
+		this.shipAddress = shipAddress;
+		this.buyAddress = buyAddress;
+		this.birth = birth;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
+		this.emailRegister = emailRegister;
+		this.avatarPath = avatarPath;
 	}
 
 	public String getCustomerID() {
@@ -143,12 +164,24 @@ public class Customer {
 		this.emailRegister = emailRegister;
 	}
 
+
+	public String getAvatarPath() {
+		return avatarPath;
+	}
+
+
+	public void setAvatarPath(String avatarPath) {
+		this.avatarPath = avatarPath;
+	}
+	
 	@Override
 	public String toString() {
 		return "Customer [customerID=" + customerID + ", userName=" + userName + ", passWord=" + passWord
-				+ ", fullName=" + fullName + ", gender=" + gender + ", address=" + address + ", deliAddress=" + deliAddress
-				+ ", shipAddress=" + shipAddress + ", buyAddress=" + buyAddress + ", birth=" + birth
-				+ ", phoneNumber=" + phoneNumber + ", email=" + email + ", emailRegister=" + emailRegister + "]";
+				+ ", fullName=" + fullName + ", gender=" + gender + ", address=" + address + ", deliAddress="
+				+ deliAddress + ", shipAddress=" + shipAddress + ", buyAddress=" + buyAddress + ", birth=" + birth
+				+ ", phoneNumber=" + phoneNumber + ", email=" + email + ", emailRegister=" + emailRegister
+				+ ", avatarPath=" + avatarPath + "]";
 	}
 
 }
+

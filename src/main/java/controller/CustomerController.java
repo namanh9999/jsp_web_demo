@@ -1,18 +1,28 @@
 package controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.servlet.http.Part;
+
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
+import org.apache.commons.fileupload.servlet.ServletFileUpload;
+
 
 import Util.EmailProcess;
 import Util.Encryption;
@@ -24,6 +34,7 @@ import model.Verify;
 /**
  * Servlet implementation class CustomerController
  */
+@MultipartConfig
 public class CustomerController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
@@ -60,7 +71,7 @@ public class CustomerController extends HttpServlet {
 			e.printStackTrace();
 		}
 		String action = request.getParameter("action");
-		System.out.println(action);
+		System.out.println("This is action : " + action);
 		if (action.equals("changePassInfor")) {
 			ChangePassword(request, response);
 		} else if (action.equals("changeInfor")) {
@@ -121,7 +132,6 @@ public class CustomerController extends HttpServlet {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		if (!userName.equals("null")) {
 			String userID = CustomerDao.getInstance().selectByUserName(userName).getCustomerID();
 			String password = CustomerDao.getInstance().selectByUserName(userName).getPassWord();
@@ -135,6 +145,9 @@ public class CustomerController extends HttpServlet {
 			String buyAddress = request.getParameter("buyAddress");
 			String birth = String.valueOf(request.getParameter("birth"));
 			String emailRegi = request.getParameter("emailRegister");
+			Part part = request.getPart("avatar");
+
+//			String avatarPath = request.getParameter("avatar");
 			boolean emailRegister = false;
 			if (emailRegi.equals("on")) {
 				emailRegister = true;
@@ -142,7 +155,7 @@ public class CustomerController extends HttpServlet {
 			Customer cs = new Customer(userID, userName, password, fullName, gender, address, deliAddress, shipAddress,
 					buyAddress, Date.valueOf(birth), phoneNumber, email, emailRegister);
 			CustomerDao.getInstance().update(cs);
-
+			uploadPicture(cs, part, request, userID);
 			url = "/CustomerDirec/changeInfor.jsp";
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
@@ -250,7 +263,7 @@ public class CustomerController extends HttpServlet {
 		oldPass = new Encryption().toSHA1(oldPass);
 		String newPass = request.getParameter("newPass");
 		String temp = request.getParameter("confirm");
-		 confirmPass = new Encryption().toSHA1(temp);
+		confirmPass = new Encryption().toSHA1(temp);
 		String e_oldPass = "";
 		String e_confirm = "";
 		CustomerDao cs = new CustomerDao();
@@ -303,7 +316,7 @@ public class CustomerController extends HttpServlet {
 		System.out.println("Code" + code);
 		if (codeCheck.equals(code)) {
 			CustomerDao cmd = new CustomerDao();
-			Customer cm = cmd.selectByID(session.getAttribute("userID")+"");
+			Customer cm = cmd.selectByID(session.getAttribute("userID") + "");
 			System.out.print(cm.toString());
 			Date lastTime = createDate();
 			VerifyDao vd = new VerifyDao();
@@ -334,6 +347,30 @@ public class CustomerController extends HttpServlet {
 		rd.forward(request, response);
 	}
 
+	private boolean uploadPicture(Customer cm, Part part, HttpServletRequest request, String userID)
+			throws IOException {
+		boolean result = false;
+		String folder = getServletContext().getRealPath("avatar");
+		String fileName = Path.of(part.getSubmittedFileName()).getFileName().toString();
+		int maxFileSize = 5000 * 1024;
+		int maxMemSize = 5000 * 1024;
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		System.out.println("This is multiple part check" + isMultipart);
+		String filePath = folder + "/" + fileName;
+		File file = new File(filePath);
+		if (isMultipart == true && isImage(file) == true) {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			factory.setSizeThreshold(maxMemSize);
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			upload.setFileSizeMax(maxFileSize);
+			part.write(filePath);
+			CustomerDao.getInstance().avatarUpdate(cm, userID, fileName);
+			result = true;
+		}
+
+		return result;
+	}
+
 	private String createVerifyCode() {
 		Random rd = new Random();
 		String verifyCode = "";
@@ -357,4 +394,12 @@ public class CustomerController extends HttpServlet {
 		return result;
 	}
 
+	private boolean isImage(File file) {
+		boolean result = false;
+		String mimeType = new MimetypesFileTypeMap().getContentType(file);
+		if (mimeType.startsWith("image/")) {
+			result = true;
+		}
+		return result;
+	}
 }

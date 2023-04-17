@@ -95,3 +95,12 @@ dropdown {
 .dropdown:hover .dropdown-content {
 	display: block;
 }
+
+.avatar{
+	
+	box-sizing: boder-box;	
+	width : 50px;
+	height : 50px;
+	border-radius: 50%;
+	overflow: hidden;
+}

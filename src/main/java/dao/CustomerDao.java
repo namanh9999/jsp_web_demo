@@ -104,9 +104,10 @@ public class CustomerDao implements DaoInterface<Customer> {
 				Date birth = rs.getDate("birth");
 				String phoneNumber = rs.getString("phoneNumber");
 				String email = rs.getString("email");
+				String avatarPath = rs.getString("avatarPath");
 				boolean emailRegister = rs.getBoolean("emailRegister");
 				cs = new Customer(customerID, userName, passWord, fullName, gender, address, deliAddress, shipAddress,
-						buyAddress, birth, phoneNumber, email, emailRegister);
+						buyAddress, birth, phoneNumber, email, emailRegister,avatarPath);
 				break;
 			}
 
@@ -117,7 +118,6 @@ public class CustomerDao implements DaoInterface<Customer> {
 		}
 		return cs;
 	}
-
 
 	public int insert(Customer t) {
 		int result = 0;
@@ -185,7 +185,8 @@ public class CustomerDao implements DaoInterface<Customer> {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "update Customer set userName = ?, passWord = ?, "
 				+ "fullName = ?, gender = ?, address = ?, deliAddress = ?,"
-				+ " shipAddress = ?, buyAddress = ?, birth = ?, phoneNumber = ?, " + "email = ?, emailRegister = ? where customerID = ? ";
+				+ " shipAddress = ?, buyAddress = ?, birth = ?, phoneNumber = ?, "
+				+ "email = ?, emailRegister = ? where customerID = ? ";
 
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -213,13 +214,13 @@ public class CustomerDao implements DaoInterface<Customer> {
 
 	public boolean userNameCheck(String userName) {
 		boolean check = false;
-		Connection  conn = JDBCUtil.getConnection();
+		Connection conn = JDBCUtil.getConnection();
 		String sql = " select userName from Customer where userName = ? ";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userName );
+			ps.setString(1, userName);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				check = true;
 			}
 			JDBCUtil.closeConnection(conn);
@@ -228,16 +229,17 @@ public class CustomerDao implements DaoInterface<Customer> {
 		}
 		return check;
 	}
+
 	public boolean userNameCheck(String userName, String password) {
 		boolean check = false;
-		Connection  conn = JDBCUtil.getConnection();
+		Connection conn = JDBCUtil.getConnection();
 		String sql = " select userName from Customer where userName = ? and password = ? ";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, userName );
-			ps.setString(2, password );
+			ps.setString(1, userName);
+			ps.setString(2, password);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
+			while (rs.next()) {
 				check = true;
 			}
 			JDBCUtil.closeConnection(conn);
@@ -246,16 +248,17 @@ public class CustomerDao implements DaoInterface<Customer> {
 		}
 		return check;
 	}
+
 	public boolean passCheck(String pass) {
 		boolean check = false;
-		Connection  conn = JDBCUtil.getConnection();
+		Connection conn = JDBCUtil.getConnection();
 		String sql = " select passWord from Customer where passWord =?   ";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
-			ps.setString(1, pass );
+			ps.setString(1, pass);
 			ResultSet rs = ps.executeQuery();
-			while(rs.next()) {
-				if(rs.getString("passWord").equals(pass)) {
+			while (rs.next()) {
+				if (rs.getString("passWord").equals(pass)) {
 					check = true;
 				}
 			}
@@ -265,10 +268,11 @@ public class CustomerDao implements DaoInterface<Customer> {
 		}
 		return check;
 	}
+
 	public void updatePassword(String userName, String pass) {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "update Customer set passWord = ? where userName = ? ";
-		
+
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, pass);
@@ -277,6 +281,20 @@ public class CustomerDao implements DaoInterface<Customer> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	
+
+	}
+
+	public void avatarUpdate( Customer cm ,String userID, String path) {
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "update Customer set avatarPath = ? where customerID = ?   ";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, path);
+			ps.setString(2, userID);
+			ps.executeUpdate();
+			JDBCUtil.closeConnection(conn);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

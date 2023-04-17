@@ -26,17 +26,15 @@
 </head>
 
 <body class="my-login-page"
-<%
-String url = request.getScheme() + "://" + request.getServerName()+":" + request.getServerPort() + request.getContextPath();
-%>
+	<%String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		+ request.getContextPath();%>
 	style="background-image: url('<%=url%>/img/index2.jpg');">
 	<%
 	String userName = session.getAttribute("userName") + "";
-
+	String emailRegister = "";
 	if (!userName.equals("null")) {
-		String emailRegister = "";
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
+			Class.forName("com.mysql.cj.jdbc.Driver");
 		} catch (Exception e) {
 			e.printStackTrace();
 
@@ -52,8 +50,12 @@ String url = request.getScheme() + "://" + request.getServerName()+":" + request
 		String buyAddress = cs.getBuyAddress();
 		Date date = cs.getBirth();
 		String birth = String.valueOf(date);
+		String avatarPath = cs.getAvatarPath();
+		System.out.println(avatarPath);
+		if (avatarPath == null) {
+			avatarPath ="default.jpg";
+		}
 		boolean emailRegis = cs.isEmailRegister();
-
 		if (emailRegis == true) {
 			emailRegister = "on";
 		}
@@ -92,16 +94,21 @@ String url = request.getScheme() + "://" + request.getServerName()+":" + request
 			<video autoplay loop muted class="back-video"></video>
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
-					<div class="brand">
-					</div>
+					<div class="brand"></div>
 					<div class="card fat">
 						<div class="card-body">
 							<h2 class="card-title" align="center">Change Information</h2>
-
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="<%=url %>/CustomerController">
-
+								action="<%=url%>/CustomerController" enctype="multipart/form-data">
 								<input type="hidden" name="action" value="changeInfor">
+								<div align="center">
+									<img align="top"
+										src="<%= url%>/avatar/<%=avatarPath %>"
+										class="rounded-circle" style="width: 150px;" alt="Avatar" />
+									<br> <label>Change your avatar </label> <br> <input
+										type="file" name="avatar" id="avatar">
+								</div>
+
 								<div class="row">
 									<div class="col-sm-6">
 										<div class="form-group">
@@ -122,12 +129,12 @@ String url = request.getScheme() + "://" + request.getServerName()+":" + request
 										<label>Gender</label>
 										<div class="form-group radio-check">
 											<div>
-												<input type="radio" name="Gender" value="Men"
+												<input type="radio" name="gender" value="Men"
 													<%=(gender.equals("Men")) ? "checked='checked'" : ""%>
 													id="male"> <label for="male">Men</label>
 											</div>
 											<div>
-												<input type="radio" name="Gender" value="Women"
+												<input type="radio" name="gender" value="Women"
 													<%=(gender.equals("Women")) ? "checked='checked'" : ""%>
 													id="female"> <label for="female">Women</label>
 											</div>
@@ -194,23 +201,23 @@ String url = request.getScheme() + "://" + request.getServerName()+":" + request
 
 								</div>
 
-
 								<div class="form-group m-0">
-									<button type="submit" class="btn btn-outline-primary btn-block">
-										Confirm</button>
+									<button type="submit" class="btn btn-outline-primary btn-block">Confirm</button>
+
 								</div>
 							</form>
 							<div class="container text-center">
 								<div class="row align-items-center">
 									<div class="col">
 										If you want to change password <br> <a
-											href="<%=url %>CustomerDirec/changePassword.jsp">
+											href="<%=url%>/CustomerDirec/changePassword.jsp">
 											<button type="button" class="btn btn-outline-primary">Change
 												Password</button>
 										</a>
 									</div>
 									<div class="col">
-										Back to selling page<br> <a href="<%=url %>/sellingPage.jsp">
+										Back to selling page<br> <a
+											href="<%=url%>/sellingPage.jsp">
 											<button type="button" class="btn btn-outline-primary">Selling
 												page</button>
 										</a>
@@ -246,6 +253,5 @@ String url = request.getScheme() + "://" + request.getServerName()+":" + request
 	<%
 	}
 	%>
-
 </body>
 </html>
