@@ -23,7 +23,6 @@ import javax.servlet.http.Part;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-
 import Util.EmailProcess;
 import Util.Encryption;
 import dao.CustomerDao;
@@ -107,7 +106,7 @@ public class CustomerController extends HttpServlet {
 		String password = request.getParameter("password");
 		password = new Encryption().toSHA1(password);
 		CustomerDao cs = new CustomerDao();
-
+		session.setAttribute("avatarPath", cs.getInstance().selectByUserName(userName).getAvatarPath());
 		if (cs.userNameCheck(userName, password) == true) {
 			session.setAttribute("userID", cs.selectByUserName(userName).getCustomerID());
 			url = "/sellingPage.jsp";
@@ -146,7 +145,6 @@ public class CustomerController extends HttpServlet {
 			String birth = String.valueOf(request.getParameter("birth"));
 			String emailRegi = request.getParameter("emailRegister");
 			Part part = request.getPart("avatar");
-
 //			String avatarPath = request.getParameter("avatar");
 			boolean emailRegister = false;
 			if (emailRegi.equals("on")) {
@@ -160,7 +158,29 @@ public class CustomerController extends HttpServlet {
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
+	}
 
+	private boolean uploadPicture(Customer cm, Part part, HttpServletRequest request, String userID)
+			throws IOException {
+		boolean result = false;
+		String folder = getServletContext().getRealPath("avatar");
+		String fileName = Path.of(part.getSubmittedFileName()).getFileName().toString();
+		int maxFileSize = 5 * 1024;
+		int maxMemSize = 5 * 1024;
+		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
+		System.out.println("This is multiple part check" + isMultipart);
+		String filePath = folder + "/" + fileName;
+		File file = new File(filePath);
+		if (isMultipart == true && isImage(file) == true) {
+			DiskFileItemFactory factory = new DiskFileItemFactory();
+			factory.setSizeThreshold(maxMemSize);
+			ServletFileUpload upload = new ServletFileUpload(factory);
+			upload.setFileSizeMax(maxFileSize);
+			part.write(filePath);
+			CustomerDao.getInstance().avatarUpdate(cm, userID, fileName);
+			result = true;
+		}
+		return result;
 	}
 
 	private void Register(HttpServletRequest request, HttpServletResponse response)
@@ -345,30 +365,6 @@ public class CustomerController extends HttpServlet {
 		}
 		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
 		rd.forward(request, response);
-	}
-
-	private boolean uploadPicture(Customer cm, Part part, HttpServletRequest request, String userID)
-			throws IOException {
-		boolean result = false;
-		String folder = getServletContext().getRealPath("avatar");
-		String fileName = Path.of(part.getSubmittedFileName()).getFileName().toString();
-		int maxFileSize = 5000 * 1024;
-		int maxMemSize = 5000 * 1024;
-		boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-		System.out.println("This is multiple part check" + isMultipart);
-		String filePath = folder + "/" + fileName;
-		File file = new File(filePath);
-		if (isMultipart == true && isImage(file) == true) {
-			DiskFileItemFactory factory = new DiskFileItemFactory();
-			factory.setSizeThreshold(maxMemSize);
-			ServletFileUpload upload = new ServletFileUpload(factory);
-			upload.setFileSizeMax(maxFileSize);
-			part.write(filePath);
-			CustomerDao.getInstance().avatarUpdate(cm, userID, fileName);
-			result = true;
-		}
-
-		return result;
 	}
 
 	private String createVerifyCode() {

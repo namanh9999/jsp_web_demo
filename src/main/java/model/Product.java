@@ -1,24 +1,27 @@
 package model;
 
-public class Product{
-	
+import java.sql.Date;
+
+public class Product {
+
 	private String productID;
 	private String productName;
-	private Author author;
-	private int publishYear;
+	private String author;
+	private Date publishYear;
 	private double cost;
 	private double price;
 	private int quantity;
-	private Type type;
-	private Enum<EnumClass.Language> language;
+	private String type;
+	private String country;
+	private String language;
 	private String description;
-	
-	
-	
+	private String path;
 	public Product() {
 	}
-	public Product(String productID, String productName, Author author, int publishYear, double cost, double price,
-			int quantity, Type type, Enum<EnumClass.Language> language, String description) {
+
+	public Product(String productID, String productName, String author, Date publishYear, double cost, double price,
+			int quantity, String type, String language, String country, String description,
+			String path) {
 		this.productID = productID;
 		this.productName = productName;
 		this.author = author;
@@ -29,73 +32,113 @@ public class Product{
 		this.type = type;
 		this.language = language;
 		this.description = description;
+		this.country = country;
+		this.path = path;
+
 	}
+
 	public String getProductID() {
 		return productID;
 	}
+
 	public void setProductID(String productID) {
 		this.productID = productID;
 	}
+
 	public String getProductName() {
 		return productName;
 	}
+
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
-	public Author getAuthor() {
+
+	public String getAuthor() {
 		return author;
 	}
-	public void setAuthor(Author author) {
+
+	public void setAuthor(String author) {
 		this.author = author;
 	}
-	public int getPublishYear() {
+
+	public Date getPublishYear() {
 		return publishYear;
 	}
-	public void setPublishYear(int publishYear) {
+
+	public void setPublishYear(Date publishYear) {
 		this.publishYear = publishYear;
 	}
+
 	public double getCost() {
 		return cost;
 	}
+
 	public void setCost(double cost) {
 		this.cost = cost;
 	}
+
 	public double getPrice() {
 		return price;
 	}
+
 	public void setPrice(double price) {
 		this.price = price;
 	}
+
 	public int getQuantity() {
 		return quantity;
 	}
+
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
 	}
-	public Type getType() {
+
+	public String getType() {
 		return type;
 	}
-	public void setType(Type type) {
+
+	public void setType(String type) {
 		this.type = type;
 	}
-	public Enum<EnumClass.Language> getLanguage() {
+
+	public String getLanguage() {
 		return language;
 	}
-	public void setLanguage(EnumClass.Language language) {
+
+	public void setLanguage(String language) {
 		this.language = language;
 	}
-	public String getdescription() {
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
+	}
+
+	public String getDescription() {
 		return description;
 	}
-	public void setdescription(String description) {
+
+	public void setDescription(String description) {
 		this.description = description;
 	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
 	@Override
 	public String toString() {
 		return "Product [productID=" + productID + ", productName=" + productName + ", author=" + author
 				+ ", publishYear=" + publishYear + ", cost=" + cost + ", price=" + price + ", quantity=" + quantity
-				+ ", type=" + type + ", language=" + language + ", description=" + description + "]";
+				+ ", type=" + type + ", country=" + country + ", language=" + language + ", description=" + description
+				+ ", path=" + path + "]";
 	}
-	
-	
+
 }

@@ -95,7 +95,7 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 			</div>
 		</div>
 
-		<%@ include file="footer.jsp"%>
+		<%@ include file="Footer/footer.jsp"%>
 
 	</section>
 

@@ -56,7 +56,7 @@ public class TypeDao implements DaoInterface<Type> {
 
 	public int insert(Type t) {
 		Connection conn = JDBCUtil.getConnection();
-		String sql = "select * from Type where typeID = ? ";
+		String sql = "insert into Type values(?, ? ) ";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, t.getTypeID());

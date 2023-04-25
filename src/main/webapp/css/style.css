@@ -38,7 +38,7 @@ nav ul li {
 	margin-left: 40px;
 }
 
-nav ul li a select{
+nav ul li a select {
 	text-decoration: none;
 	color: #fff;
 	font-size: 17px;
@@ -96,11 +96,17 @@ dropdown {
 	display: block;
 }
 
-.avatar{
-	
-	box-sizing: boder-box;	
-	width : 50px;
-	height : 50px;
+.avatar {
+	box-sizing: boder-box;
+	width: 50px;
+	height: 50px;
 	border-radius: 50%;
 	overflow: hidden;
+}
+
+.video-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
 }

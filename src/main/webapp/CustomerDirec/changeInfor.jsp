@@ -221,12 +221,9 @@
 											<button type="button" class="btn btn-outline-primary">Selling
 												page</button>
 										</a>
-
 									</div>
 								</div>
-
 							</div>
-
 						</div>
 					</div>
 				</div>
@@ -249,9 +246,9 @@
 		<a href="/CustomerDirec/sellingPage.jsp"><button
 				class="btn-outsite-primary ">Click here</button> </a>
 	</div>
-
 	<%
 	}
 	%>
+
 </body>
 </html>

@@ -1,13 +1,13 @@
 package Util;
 
 import java.util.Properties;
-
 import javax.mail.Authenticator;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
 public class EmailProcess {
 	public void sendEmail(String emailRecipient, String contents, String subject) {
 
@@ -21,21 +21,20 @@ public class EmailProcess {
 		prop.put("mail.smtp.starttls.enable", "true");
 
 		Authenticator auth = new Authenticator() {
-
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(email, pass);
 			}
-			
+
 		};
-		Session session = Session.getDefaultInstance(prop,auth);
-		
+		Session session = Session.getDefaultInstance(prop, auth);
+
 		final String to = emailRecipient;
 		MimeMessage msg = new MimeMessage(session);
 		try {
-			msg.addHeader("Content-type", "text/HTML; charset=UTF-8");	
+			msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			msg.setFrom(email);
-			msg.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to, false) );
+			msg.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to, false));
 			msg.setSubject(subject);
 			msg.setContent(contents, "text/html");
 			Transport.send(msg);

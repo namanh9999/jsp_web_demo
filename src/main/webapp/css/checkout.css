@@ -1,3 +1,24 @@
-.container {
-  max-width: 960px;
+@media (max-width: 767px) {
+  .navbar-brand {
+    font-size: 1.5rem;
+    padding: 0.5rem;
+  }
+  
+  .navbar-nav .nav-link {
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+}
+
+/* Hide the brand logo on small screens */
+@media (max-width: 575px) {
+  .navbar-brand {
+    display: none;
+  }
+}
+/* Hide the navbar when the screen is smaller than 768px */
+@media (max-width: 767px) {
+  .navbar {
+    display: none;
+  }
 }

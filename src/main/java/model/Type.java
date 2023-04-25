@@ -35,6 +35,4 @@ public class Type {
 	public String toString() {
 		return "Type [typeID=" + typeID + ", typeName=" + typeName + "]";
 	}
-	
-	
 }
