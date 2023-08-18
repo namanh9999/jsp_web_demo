@@ -173,7 +173,7 @@ public class Customer {
 	public void setAvatarPath(String avatarPath) {
 		this.avatarPath = avatarPath;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "Customer [customerID=" + customerID + ", userName=" + userName + ", passWord=" + passWord

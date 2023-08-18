@@ -2,10 +2,6 @@ package model;
 
 import java.sql.Date;
 
-import model.EnumClass.OrderStatus;
-import model.EnumClass.PaymentStatus;
-import model.EnumClass.Payments;
-
 public class Order {
 	 private String orderID;
 	 private Customer customer;
@@ -38,7 +34,7 @@ public class Order {
 		this.shipDate = shipDate;
 	}
 
-	
+
 	 public  String getOrderID() {
 		return orderID;
 	}
@@ -135,7 +131,7 @@ public class Order {
 				+ orderDate + ", shipDate=" + shipDate + "]";
 	}
 
-	
+
 		public static  String StringHanding(String value) {
 		if (value.equals("Vietname")) {
 			return "VN";

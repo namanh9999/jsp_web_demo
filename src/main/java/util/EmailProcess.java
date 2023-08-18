@@ -1,7 +1,9 @@
-package Util;
+package util;
 
 import java.util.Properties;
+
 import javax.mail.Authenticator;
+import javax.mail.Message.RecipientType;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
@@ -34,7 +36,7 @@ public class EmailProcess {
 		try {
 			msg.addHeader("Content-type", "text/HTML; charset=UTF-8");
 			msg.setFrom(email);
-			msg.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to, false));
+			msg.setRecipients(RecipientType.TO, InternetAddress.parse(to, false));
 			msg.setSubject(subject);
 			msg.setContent(contents, "text/html");
 			Transport.send(msg);

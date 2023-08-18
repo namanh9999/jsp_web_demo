@@ -1,3 +1,4 @@
+<%@page import="java.util.ArrayList"%>
 <%@page import="java.sql.Date"%>
 <%@page import="model.Product"%>
 <%@page import="dao.ProductDao"%>
@@ -28,8 +29,6 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 	rel="stylesheet"
 	integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
 	crossorigin="anonymous">
-
-
 <style>
 .bd-placeholder-img {
 	font-size: 1.125rem;
@@ -84,6 +83,11 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 }
 </style>
 <%
+try {
+	Class.forName("com.mysql.cj.jdbc.Driver");
+} catch (Exception e) {
+	e.printStackTrace();
+}
 String productID = ProductDao.getInstance().makeID();
 System.out.print(productID);
 
@@ -92,10 +96,9 @@ String title = "";
 // To Do 
 String e_file = request.getAttribute("e_file") + "";
 e_file = e_file.equals("null") ? "" : e_file;
-System.out.println("e_file" + e_file);
+System.out.print(e_file);
 String e_productName = request.getAttribute("e_productName") + "";
 e_productName = e_productName.equals("null") ? "" : e_productName;
-System.out.println("e_productName" + e_productName);
 String productName = "";
 String author = "";
 Date publishYear = null;
@@ -108,6 +111,9 @@ String language = "";
 String description = "";
 String setMain = "";
 String fileName = "";
+ArrayList<String> listLanguage = ProductDao.getInstance().getLanguage();
+ArrayList<String> listCountry = ProductDao.getInstance().getCountry();
+ArrayList<String> listCategories = ProductDao.getInstance().getCategories();
 
 if (!e_productName.equals("") || !e_file.equals("")) {
 	Object obj = session.getAttribute("Product");
@@ -119,13 +125,12 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 	cost = pd.getCost();
 	price = pd.getPrice();
 	quantity = pd.getQuantity();
-	type = pd.getType();
+	type = pd.getCategories().getCategoriesName();
 	country = pd.getCountry();
 	language = pd.getLanguage();
 	description = pd.getDescription();
-	setMain = request.getAttribute("setMain") + "";
 	fileName = pd.getPath();
-
+	setMain = request.getAttribute("setMain") + "";
 }
 %>
 <!-- Custom styles for this template -->
@@ -194,7 +199,11 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 						<label for="country" class="form-label">Country</label> <select
 							class="form-select" id="country" name="country" required>
 							<option ><%=country%></option>
-							<option>United States</option>
+<%
+							for(String value : listCountry){
+							%>
+							<option value="<%=value%>"><%=value %></option>
+							<%} %>
 						</select>
 						<div class="invalid-feedback">Please select a valid country.</div>
 					</div>
@@ -202,8 +211,11 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 						<label for="language" class="form-label">Language</label> <select
 							class="form-select" id="language" name="language" required>
 							<option value=""><%=language%></option>
-							<option value="English">English</option>
-
+							<%
+							for(String value : listLanguage){
+							%>
+							<option value="<%=value%>"><%=value %></option>
+							<%} %>
 						</select>
 						<div class="invalid-feedback">Please select a valid
 							language.</div>
@@ -212,7 +224,11 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 						<label for="type" class="form-label">Type</label> <select
 							class="form-select" id="type" name="type" required>
 							<option value="<%=type%>"><%=type%></option>
-							<option value="Funny">Funny</option>
+														<%
+							for(String value : listCategories){
+							%>
+							<option value="<%=value%>"><%=value %></option>
+							<%} %>
 						</select>
 						<div class="invalid-feedback">Please select a valid type.</div>
 					</div>
@@ -243,8 +259,6 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 						for="save-info">Set to the main video</label> <span></span>
 
 				</div>
-
-
 				<hr class="my-4">
 				<button class="w-100 btn btn-primary btn-lg" type="submit">Confirm</button>
 			</form>
@@ -252,6 +266,7 @@ if (!e_productName.equals("") || !e_file.equals("")) {
 		</div>
 	</div>
 	<script
+
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
 		crossorigin="anonymous"></script>

@@ -243,7 +243,7 @@
 	<%} else {%>
 	<div style="background-image: url('img/index2.jpg');">
 		<h1>You must be login first</h1>
-		<a href="/CustomerDirec/sellingPage.jsp"><button
+		<a href="../sellingPage.jsp"><button
 				class="btn-outsite-primary ">Click here</button> </a>
 	</div>
 	<%

@@ -1,38 +1,38 @@
 package model;
 
-public class Type {
+public class Categories {
+	private int categoriesID ;
+	private String categoriesName;
 
-	private String typeID;
-	private String typeName;
-
-	
-	public Type() {
+	public Categories() {
 
 	}
 
-	public Type(String typeID, String typeName ) {
-		this.typeID = typeID;
-		this.typeName = typeName;
+	public Categories(int categoriesID, String categoriesName) {
+		this.categoriesID = categoriesID;
+		this.categoriesName = categoriesName;
 	}
 
-	public String getTypeID() {
-		return typeID;
+	public int getCategoriesID() {
+		return categoriesID;
 	}
 
-	public void setTypeID(String typeID) {
-		this.typeID = typeID;
+	public void setCategoriesID(int categoriesID) {
+		this.categoriesID = categoriesID;
 	}
 
-	public String getTypeName() {
-		return typeName;
+	public String getCategoriesName() {
+		return categoriesName;
 	}
 
-	public void setTypeName(String typeName) {
-		this.typeName = typeName;
+	public void setCategoriesName(String categoriesName) {
+		this.categoriesName = categoriesName;
 	}
 
 	@Override
 	public String toString() {
-		return "Type [typeID=" + typeID + ", typeName=" + typeName + "]";
+		return "Categories [categoriesID=" + categoriesID + ", categoriesName=" + categoriesName + "]";
 	}
+
+
 }

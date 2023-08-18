@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%
+	String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		+ request.getContextPath();
+	%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,38 +15,24 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="css/my-login.css">
+<link rel="stylesheet" type="text/css" href="<%=url %>/css/my-login.css">
 
 <style type="text/css">
 .rq {
 	color: red;
 }
 </style>
-<script>
-	function togglePasswordVisibility() {
-		const passwordInput = document.getElementById("password");
-		if (passwordInput.type === "password") {
-			passwordInput.type = "text";
-		} else {
-			passwordInput.type = "password";
-		}
-	}
-</script>
 
 </head>
 <%
-// get web's url
+
 String ss = session.getAttribute("session") + "";
-
 System.out.println("this is session on index file " + ss);
-String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-		+ request.getContextPath();
 System.out.println(url);
-
 String userName = session.getAttribute("userName") + "";
-userName = userName.equals("null") ? "" : userName ;
-String e_userName = request.getAttribute("e_userName") + "";
-e_userName = (e_userName.equals("null") ? "" : e_userName);
+userName = userName.equals("null") ? "" : userName;
+String e_error = request.getAttribute("e_error") + "";
+e_error = (e_error.equals("null") ? "" : e_error);
 %>
 <body class="my-login-page">
 	<section class="h-100" style="background-image: url('img/bg.jpg');">
@@ -50,20 +40,30 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
-					<div class="brand">
-						<img src="img/logo.jpg" alt="logo">
+					<div class="brand" align="center">
+						<img src="<%=url%>/img/logo.jpg" alt="logo">
 					</div>
 					<div class="card fat">
 						<div class="card-body">
 							<h4 class="card-title" align="center">Login</h4>
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="CustomerController">
-								<input type="hidden" name="action" value="login"> 								<div class="form-group">
+								action="<%=url %>/AdminController">
+								<input type="hidden" name="action" value="login">
+								<div class="form-group">
+									<label for="type" class="form-label">Select Permission</label> <br>
+									 <select
+										class="form-select" id="permission" name="permission" required>
+										<option value="administrator">Administrator</option>
+										<option value="superUser">Super User</option>
+									</select>
+									<div class="invalid-feedback">Please select a valid type.</div>
+								</div>
+								<div class="form-group">
 									<label for="userName">User Name</label> <input id="email"
 										type="text" class="form-control" name="userName" required
-										value="<%=userName %>"
-										autofocus> 
-									<div class="invalid-feedback">userName is invalid</div>
+										value="<%=userName%>" autofocus>
+									<div class="invalid-feedback">User name is invalid</div>
+
 								</div>
 								<div class="form-group">
 									<label for="password">Password <a href="forgot.jsp"
@@ -72,14 +72,8 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 										name="password" required data-eye>
 									<div class="invalid-feedback">Password is required</div>
 								</div>
-								<span class="rq"> <%=e_userName%></span>
-								<div class="form-group">
-									<div class="custom-checkbox custom-control">
-										<input type="checkbox" name="remember" id="remember"
-											class="custom-control-input"> <label for="remember"
-											class="custom-control-label">Remember Me</label>
-									</div>
-								</div>
+								<span class="rq"> <%=e_error%></span>
+
 								<div class="form-group m-0">
 									<button type="submit" class="btn btn-primary btn-block">
 										Login</button>
@@ -95,7 +89,7 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 			</div>
 		</div>
 
-		<%@ include file="footer.jsp"%>
+		<%@ include file="/Footer/footer.jsp"%>
 
 	</section>
 

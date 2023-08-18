@@ -11,4 +11,4 @@ public interface DaoInterface<T> {
 	public int remove(T t);
 	public int removeAll(ArrayList<T> list);
 	public int update(T t);
-}		
+}

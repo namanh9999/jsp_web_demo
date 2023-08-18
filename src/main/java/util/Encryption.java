@@ -1,4 +1,4 @@
-package Util;
+package util;
 
 import java.security.MessageDigest;
 
@@ -6,8 +6,10 @@ import org.apache.tomcat.util.codec.binary.Base64;
 
 public class Encryption {
 	// use sha-1
-
-	public String toSHA1(String pass) {
+	public static Encryption getInstance() {
+		return new Encryption();
+	}
+	public  String toSHA1(String pass) {
 		String salt = "02393ksdd@@@qipwoeuasdjwer93jasd92";
 		String result = null;
 		pass = pass + salt;

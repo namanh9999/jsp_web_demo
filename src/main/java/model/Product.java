@@ -11,16 +11,31 @@ public class Product {
 	private double cost;
 	private double price;
 	private int quantity;
-	private String type;
+	private Categories categories;
 	private String country;
 	private String language;
 	private String description;
 	private String path;
 	public Product() {
 	}
+	public Product( String productName, String author, Date publishYear, double cost, double price,
+			int quantity, Categories categories, String language, String country, String description,
+			String path) {
+		this.productName = productName;
+		this.author = author;
+		this.publishYear = publishYear;
+		this.cost = cost;
+		this.price = price;
+		this.quantity = quantity;
+		this.categories = categories;
+		this.language = language;
+		this.description = description;
+		this.country = country;
+		this.path = path;
 
+	}
 	public Product(String productID, String productName, String author, Date publishYear, double cost, double price,
-			int quantity, String type, String language, String country, String description,
+			int quantity, Categories categories, String language, String country, String description,
 			String path) {
 		this.productID = productID;
 		this.productName = productName;
@@ -29,7 +44,7 @@ public class Product {
 		this.cost = cost;
 		this.price = price;
 		this.quantity = quantity;
-		this.type = type;
+		this.categories = categories;
 		this.language = language;
 		this.description = description;
 		this.country = country;
@@ -93,12 +108,12 @@ public class Product {
 		this.quantity = quantity;
 	}
 
-	public String getType() {
-		return type;
+	public Categories getCategories() {
+		return categories;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setCategories(Categories categories) {
+		this.categories = categories;
 	}
 
 	public String getLanguage() {
@@ -137,7 +152,7 @@ public class Product {
 	public String toString() {
 		return "Product [productID=" + productID + ", productName=" + productName + ", author=" + author
 				+ ", publishYear=" + publishYear + ", cost=" + cost + ", price=" + price + ", quantity=" + quantity
-				+ ", type=" + type + ", country=" + country + ", language=" + language + ", description=" + description
+				+ ", categories=" + categories + ", country=" + country + ", language=" + language + ", description=" + description
 				+ ", path=" + path + "]";
 	}
 

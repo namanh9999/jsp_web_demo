@@ -1,5 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%
+String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+		+ request.getContextPath();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +13,7 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="css/my-login.css">
+<link rel="stylesheet" type="text/css" href="<%=url%>/css/my-login.css">
 
 <style type="text/css">
 .rq {
@@ -18,10 +22,7 @@
 </style>
 </head>
 
-<%
-String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-		+ request.getContextPath();
-%>
+
 <body class="my-login-page"
 	style="background-image: url('<%=url%>/img/index4.jpg');">
 	<%
@@ -37,7 +38,7 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 	%>
 	<h1>You have to Login fist</h1>
 	<h4>Click here to turn around login page</h4>
-	<a href="/index2.jsp"><button class="btn-ouline-primary">Login
+	<a href="<%=url%>/index2.jsp"><button class="btn-ouline-primary">Login
 			Page</button></a>
 	<%
 	} else {

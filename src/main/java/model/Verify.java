@@ -50,7 +50,7 @@ private String reason ;
 	public void setReason(String reason) {
 		this.reason = reason;
 	}
-	
+
 	public boolean isVerify() {
 		return verify;
 	}
@@ -62,6 +62,6 @@ private String reason ;
 		return "Verify [customer=" + customer + ", recently=" + recently + ", lastTime=" + lastTime + ", code=" + code
 				+ ", verify=" + verify + "]";
 	}
-	
-	
+
+
 }

@@ -110,3 +110,9 @@ dropdown {
 	justify-content: center;
 	height: 100vh;
 }
+
+.limit-text-height {
+  height: 4.5em; /* Adjust the height as needed */
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,12 +22,13 @@ import javax.servlet.http.Part;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
-import Util.EmailProcess;
-import Util.Encryption;
 import dao.CustomerDao;
 import dao.VerifyDao;
 import model.Customer;
 import model.Verify;
+import util.EmailProcess;
+import util.Encryption;
+import util.findOutOS;
 
 /**
  * Servlet implementation class CustomerController
@@ -49,6 +49,7 @@ public class CustomerController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		String action = request.getParameter("action");
@@ -61,6 +62,7 @@ public class CustomerController extends HttpServlet {
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
@@ -78,6 +80,8 @@ public class CustomerController extends HttpServlet {
 		} else if (action.equals("register")) {
 			Register(request, response);
 		} else if (action.equals("login")) {
+			Runnable find_os = new findOutOS();
+			find_os.run();
 			LogIn(request, response);
 		} else if (action.equals("saveInfor") || action.equals("changePass")) {
 			checkVerifyCode(request, response, action);
@@ -89,7 +93,7 @@ public class CustomerController extends HttpServlet {
 		HttpSession session = request.getSession();
 		session.invalidate();
 		url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-				+ request.getContextPath() + "/index2.jsp";
+				+ request.getContextPath() + "/login.jsp";
 		System.out.println(url);
 		response.sendRedirect(url);
 
@@ -106,12 +110,12 @@ public class CustomerController extends HttpServlet {
 		String password = request.getParameter("password");
 		password = new Encryption().toSHA1(password);
 		CustomerDao cs = new CustomerDao();
-		session.setAttribute("avatarPath", cs.getInstance().selectByUserName(userName).getAvatarPath());
-		if (cs.userNameCheck(userName, password) == true) {
+		if (cs.userNameCheck(userName, password)) {
 			session.setAttribute("userID", cs.selectByUserName(userName).getCustomerID());
-			url = "/sellingPage.jsp";
+			session.setAttribute("avatarPath", CustomerDao.getInstance().selectByUserName(userName).getAvatarPath());
+			url = "/index.jsp";
 		} else {
-			url = "/index2.jsp";
+			url = "/login.jsp";
 			e_userName = "User name or password not match";
 			request.setAttribute("e_userName", e_userName);
 		}
@@ -171,7 +175,7 @@ public class CustomerController extends HttpServlet {
 		System.out.println("This is multiple part check" + isMultipart);
 		String filePath = folder + "/" + fileName;
 		File file = new File(filePath);
-		if (isMultipart == true && isImage(file) == true) {
+		if (isMultipart && isImage(file)) {
 			DiskFileItemFactory factory = new DiskFileItemFactory();
 			factory.setSizeThreshold(maxMemSize);
 			ServletFileUpload upload = new ServletFileUpload(factory);
@@ -231,15 +235,15 @@ public class CustomerController extends HttpServlet {
 
 		CustomerDao cs = new CustomerDao();
 
-		if (cs.userNameCheck(userName) == true) {
+		if (cs.userNameCheck(userName)) {
 			e_userName = "User name already exist, Please choose new user name <_> ";
 			request.setAttribute("e_userName", e_userName);
 			url = "/CustomerDirec/register.jsp";
-		} else if (passwordMatch == false) {
+		} else if (!passwordMatch) {
 			e_Repassword = "Password not match ! ";
 			request.setAttribute("e_Repassword", e_Repassword);
 			url = "/CustomerDirec/register.jsp";
-		} else if (emailCheck != true) {
+		} else if (!emailCheck) {
 			request.setAttribute("e_email", "Email not exist or not true");
 			url = "/CustomerDirec/register.jsp";
 		} else if (gender == null) {
@@ -256,9 +260,10 @@ public class CustomerController extends HttpServlet {
 			passWord = new Encryption().toSHA1(passWord);
 			Date date = Date.valueOf(birth);
 			Random rd = new Random();
-			String userID = (String) userName + rd.nextInt(1000, 9999);
+			String userID = userName + rd.nextInt(1000, 9999);
 			Customer cm = new Customer(userID, userName, passWord, fullName, gender, address, deliAddress, shipAddress,
 					buyAddress, date, phoneNumber, email, temp);
+
 			session.setAttribute("customerID", userID);
 			session.setAttribute("CustomerInfor", cm);
 			session.setAttribute("verifyCode", verifyCode);
@@ -287,7 +292,7 @@ public class CustomerController extends HttpServlet {
 		String e_oldPass = "";
 		String e_confirm = "";
 		CustomerDao cs = new CustomerDao();
-		if (!cs.passCheck(oldPass) == true) {
+		if (!cs.passCheck(oldPass)) {
 			System.out.println("This is oldpass check ! true");
 			e_oldPass += "Password not match";
 			request.setAttribute("e_oldPass", e_oldPass);
@@ -336,17 +341,18 @@ public class CustomerController extends HttpServlet {
 		System.out.println("Code" + code);
 		if (codeCheck.equals(code)) {
 			CustomerDao cmd = new CustomerDao();
-			Customer cm = cmd.selectByID(session.getAttribute("userID") + "");
-			System.out.print(cm.toString());
 			Date lastTime = createDate();
 			VerifyDao vd = new VerifyDao();
 			if (action.equals("saveInfor")) {
+				Customer cm = (Customer) session.getAttribute("CustomerInfor");
+				System.out.println(cm.toString());
 				cmd.insert(cm);
 				Verify verify = new Verify(cm, lastTime, lastTime, code, true, "Register an account");
 				vd.insert(verify);
-				url = "/index2.jsp";
+				url = "/login.jsp";
 				session.invalidate();
 			} else if (action.equals("changePass")) {
+				Customer cm = cmd.selectByID(session.getAttribute("userID") + "");
 				System.out.println("There is check Verify Code function");
 				System.out.println("Code" + code);
 				Date recently = vd.getLastDate(String.valueOf(session.getAttribute("userID")));
@@ -355,7 +361,7 @@ public class CustomerController extends HttpServlet {
 				String userName = session.getAttribute("userName") + "";
 				String confirmPass = session.getAttribute("confirmPass") + "";
 				cmd.updatePassword(userName, confirmPass);
-				url = "/index2.jsp";
+				url = "/login.jsp";
 				session.invalidate();
 			}
 		} else {

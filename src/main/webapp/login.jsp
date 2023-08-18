@@ -1,5 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
+	<%
+	String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
+	+ request.getContextPath();
+System.out.println(url);	
+	%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -11,7 +16,7 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
 	integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
 	crossorigin="anonymous">
-<link rel="stylesheet" type="text/css" href="css/my-login.css">
+<link rel="stylesheet" type="text/css" href="<%=url %>/css/my-login.css">
 
 <style type="text/css">
 .rq {
@@ -33,12 +38,7 @@
 <%
 // get web's url
 String ss = session.getAttribute("session") + "";
-
 System.out.println("this is session on index file " + ss);
-String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
-		+ request.getContextPath();
-System.out.println(url);
-
 String userName = session.getAttribute("userName") + "";
 userName = userName.equals("null") ? "" : userName ;
 String e_userName = request.getAttribute("e_userName") + "";
@@ -57,7 +57,7 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 						<div class="card-body">
 							<h4 class="card-title" align="center">Login</h4>
 							<form method="POST" class="my-login-validation" novalidate=""
-								action="CustomerController">
+								action="<%=url%>/CustomerController">
 								<input type="hidden" name="action" value="login"> 								<div class="form-group">
 									<label for="userName">User Name</label> <input id="email"
 										type="text" class="form-control" name="userName" required
@@ -85,7 +85,7 @@ e_userName = (e_userName.equals("null") ? "" : e_userName);
 										Login</button>
 								</div>
 								<div class="mt-4 text-center">
-									Don't have an account? <a href="register.jsp">Create One</a>
+									Don't have an account? <a href="<%=url%>/CustomerDirec/register.jsp">Create One</a>
 								</div>
 							</form>
 						</div>

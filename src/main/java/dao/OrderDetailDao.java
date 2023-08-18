@@ -10,12 +10,13 @@ import model.OrderDetail;
 import model.Product;
 
 public class OrderDetailDao implements DaoInterface<OrderDetail> {
-	private ArrayList<OrderDetail> data = new ArrayList<OrderDetail>();
+	private ArrayList<OrderDetail> data = new ArrayList<>();
 
 	public OrderDetail getInstance() {
 		return new OrderDetail();
 	}
 
+	@Override
 	public ArrayList<OrderDetail> selectAll() {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "Select * from OrderDetail";
@@ -45,6 +46,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 		return data;
 	}
 
+	@Override
 	public OrderDetail selectByID(String id) {
 		OrderDetail result = null;
 		Connection conn = JDBCUtil.getConnection();
@@ -75,6 +77,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 		return result;
 	}
 
+	@Override
 	public int insert(OrderDetail t) {
 
 		int result = 0;
@@ -98,6 +101,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 		return result;
 	}
 
+	@Override
 	public int insertAll(ArrayList<OrderDetail> list) {
 		int count = 0;
 		for (OrderDetail t : list) {
@@ -107,6 +111,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 		return count;
 	}
 
+	@Override
 	public int remove(OrderDetail t) {
 		int result = 0;
 		Connection conn = JDBCUtil.getConnection();
@@ -124,6 +129,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 		}
 		return result;
 	}
+	@Override
 	public int removeAll(ArrayList<OrderDetail> list) {
 		int count = 0;
 		for (OrderDetail t : list) {
@@ -133,6 +139,7 @@ public class OrderDetailDao implements DaoInterface<OrderDetail> {
 	return count;
 	}
 
+	@Override
 	public int update(OrderDetail t) {
 		this.remove(t);
 		this.insert(t);

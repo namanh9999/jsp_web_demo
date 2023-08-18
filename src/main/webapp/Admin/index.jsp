@@ -88,8 +88,7 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 
 	<header
 		class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">Company
-			name</a>
+		<a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">Netflix</a>
 		<button class="navbar-toggler position-absolute d-md-none collapsed"
 			type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
 			aria-controls="sidebarMenu" aria-expanded="false"
@@ -98,13 +97,17 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 		</button>
 		<input class="form-control form-control-dark w-100 rounded-0 border-0"
 			type="text" placeholder="Search" aria-label="Search">
-		<div class="navbar-nav">
 			<div class="nav-item text-nowrap">
-				<a class="nav-link px-3" href="#">Sign out</a>
+				<a class="nav-link px-3"
+					href="<%=url%>/AdminController?action=logout">Sign out</a>
+
 			</div>
-		</div>
 	</header>
 
+	<%
+	String privilege = session.getAttribute("privilege") + "";
+	System.out.println(privilege);
+	%>
 	<div class="container-fluid">
 		<div class="row">
 			<nav id="sidebarMenu"
@@ -118,28 +121,56 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 						<li class="nav-item"><a class="nav-link" href="#"> <span
 								data-feather="file" class="align-text-bottom"></span> Orders
 						</a></li>
-						<li class="nav-item"><a class="nav-link"
-							href="<%=url%>/Product/Futher.jsp"><span
-								data-feather="shopping-cart" class="align-text-bottom"></span>
-								Products </a></li>
-						<li class="nav-item"><a class="nav-link" href="#"> <span
-								data-feather="users" class="align-text-bottom"></span> Customers
-						</a></li>
-						<li class="nav-item"><a class="nav-link"
-							href="<%=url%>/Product/Futher.jsp"><span
-								data-feather="shopping-cart" class="align-text-bottom"></span>
-								Display Users </a></li>
+						<li class="nav-item"></li>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#"
+							id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="false">Product</a>
+							<div class="dropdown-menu"
+								aria-labelledby="navbarDropdownMenuLink">
+								<a class="nav-link" href="<%=url%>/Product/Futher.jsp"><span
+									data-feather="shopping-cart" class="align-text-bottom"></span>
+									Add Products </a> <a class="nav-link"
+									href="<%=url%>/ProductController?action=showAllProduct">Product
+									Management<span data-feather="users" class="align-text-bottom"></span>
+								</a>
 
+							</div></li>
 						<li class="nav-item"><a class="nav-link" href="#"> <span
 								data-feather="bar-chart-2" class="align-text-bottom"></span>
 								Reports
 						</a></li>
+
 						<li class="nav-item"><a class="nav-link" href="#"> <span
 								data-feather="layers" class="align-text-bottom"></span>
 								Integrations
 						</a></li>
+						<%
+						if (privilege.equals("superuser")) {
+						%>
+						<li class="nav-item dropdown"><a
+							class="nav-link dropdown-toggle" href="#"
+							id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="false">Manager</a>
+							<div class="dropdown-menu"
+								aria-labelledby="navbarDropdownMenuLink">
+								<a class="nav-link" href="#"> <span data-feather="users"
+									class="align-text-bottom"></span> Customers
+								</a> <a class="nav-link"
+									href="<%=url%>/AdminController?action=adminManager">Admin
+									Account<span data-feather="users" class="align-text-bottom"></span>
+								</a> <a class="nav-link" 
+									href="<%=url%>/Admin/AdminManager/AdminAccountRegister.jsp">Register Admin Account
+									<span data-feather="users" class="align-text-bottom"></span>
+								</a>
+							</div></li>
+						<li class="nav-item"><a class="nav-link"
+							href="<%=url%>/Admin/AdminManager/AdminPage/tables.html"> <i
+								class="fas fa-fw fa-table"></i> <span>Tables</span></a></li>
+						<%
+						}
+						%>
 					</ul>
-
 
 					<h6
 						class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase">
@@ -172,7 +203,7 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 			<main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 				<div
 					class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-					<h1 class="h2">Dashboard</h1>
+					<h1 class="h2"></h1>
 					<div class="btn-toolbar mb-2 mb-md-0">
 						<div class="btn-group me-2">
 							<button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
@@ -185,149 +216,22 @@ String url = request.getScheme() + "://" + request.getServerName() + ":" + reque
 						</button>
 					</div>
 				</div>
-
-				<canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
-				<h2>Section title</h2>
-				<div class="table-responsive">
-					<table class="table table-striped table-sm">
-						<thead>
-							<tr>
-								<th scope="col">#</th>
-								<th scope="col">Header</th>
-								<th scope="col">Header</th>
-								<th scope="col">Header</th>
-								<th scope="col">Header</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td>1,001</td>
-								<td>random</td>
-								<td>data</td>
-								<td>placeholder</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td>1,002</td>
-								<td>placeholder</td>
-								<td>irrelevant</td>
-								<td>visual</td>
-								<td>layout</td>
-							</tr>
-							<tr>
-								<td>1,003</td>
-								<td>data</td>
-								<td>rich</td>
-								<td>dashboard</td>
-								<td>tabular</td>
-							</tr>
-							<tr>
-								<td>1,003</td>
-								<td>information</td>
-								<td>placeholder</td>
-								<td>illustrative</td>
-								<td>data</td>
-							</tr>
-							<tr>
-								<td>1,004</td>
-								<td>text</td>
-								<td>random</td>
-								<td>layout</td>
-								<td>dashboard</td>
-							</tr>
-							<tr>
-								<td>1,005</td>
-								<td>dashboard</td>
-								<td>irrelevant</td>
-								<td>text</td>
-								<td>placeholder</td>
-							</tr>
-							<tr>
-								<td>1,006</td>
-								<td>dashboard</td>
-								<td>illustrative</td>
-								<td>rich</td>
-								<td>data</td>
-							</tr>
-							<tr>
-								<td>1,007</td>
-								<td>placeholder</td>
-								<td>tabular</td>
-								<td>information</td>
-								<td>irrelevant</td>
-							</tr>
-							<tr>
-								<td>1,008</td>
-								<td>random</td>
-								<td>data</td>
-								<td>placeholder</td>
-								<td>text</td>
-							</tr>
-							<tr>
-								<td>1,009</td>
-								<td>placeholder</td>
-								<td>irrelevant</td>
-								<td>visual</td>
-								<td>layout</td>
-							</tr>
-							<tr>
-								<td>1,010</td>
-								<td>data</td>
-								<td>rich</td>
-								<td>dashboard</td>
-								<td>tabular</td>
-							</tr>
-							<tr>
-								<td>1,011</td>
-								<td>information</td>
-								<td>placeholder</td>
-								<td>illustrative</td>
-								<td>data</td>
-							</tr>
-							<tr>
-								<td>1,012</td>
-								<td>text</td>
-								<td>placeholder</td>
-								<td>layout</td>
-								<td>dashboard</td>
-							</tr>
-							<tr>
-								<td>1,013</td>
-								<td>dashboard</td>
-								<td>irrelevant</td>
-								<td>text</td>
-								<td>visual</td>
-							</tr>
-							<tr>
-								<td>1,014</td>
-								<td>dashboard</td>
-								<td>illustrative</td>
-								<td>rich</td>
-								<td>data</td>
-							</tr>
-							<tr>
-								<td>1,015</td>
-								<td>random</td>
-								<td>tabular</td>
-								<td>information</td>
-								<td>text</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
 			</main>
 		</div>
 	</div>
-	<script src="../assets/dist/js/bootstrap.bundle.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-		integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE"
+
+	<script src="<%=url%>/assets/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="<%=url%>/dashboard.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		crossorigin="anonymous"></script>
 	<script
-		src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
-		integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha"
+		src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+		integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
 		crossorigin="anonymous"></script>
-	<script src="dashboard.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+		integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+		crossorigin="anonymous"></script>
 </body>
 </html>

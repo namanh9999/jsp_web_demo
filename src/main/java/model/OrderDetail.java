@@ -1,7 +1,7 @@
 package model;
 
 public class OrderDetail {
-	
+
 	private String orDetailID;
 	private Order order;
 	private Product productID;
@@ -11,8 +11,8 @@ public class OrderDetail {
 	private double cost;
 	private double tax;
 	private double totalCost;
-	
-	
+
+
 	public OrderDetail() {
 	}
 	public OrderDetail(String orDetailID, Order order, Product productID, int quantity, double price, double discount,
@@ -81,12 +81,12 @@ public class OrderDetail {
 	public void setTotalCost(double totalCost) {
 		this.totalCost = totalCost;
 	}
-	
+
 	@Override
 	public String toString() {
 		return "OrderDetail [orDetailID=" + orDetailID + ", order=" + order + ", productID=" + productID + ", quantity="
 				+ quantity + ", price=" + price + ", discount=" + discount + ", cost=" + cost + ", tax=" + tax
 				+ ", totalCost=" + totalCost + "]";
 	}
-	
+
 }

@@ -4,18 +4,23 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
+
+import model.Categories;
 import model.Product;
 
 public class ProductDao implements DaoInterface<Product> {
 
-	private ArrayList<Product> data = new ArrayList<Product>();
+	private ArrayList<Product> data = new ArrayList<>();
 
 	public static ProductDao getInstance() {
 		return new ProductDao();
 	}
 
+	@Override
 	public ArrayList<Product> selectAll() {
 		Connection conn = JDBCUtil.getConnection();
 
@@ -31,12 +36,13 @@ public class ProductDao implements DaoInterface<Product> {
 				double cost = rs.getDouble("cost");
 				double price = rs.getDouble("price");
 				int quantity = rs.getInt("quantity");
-				String type = rs.getString("type");
+				String type = rs.getString("categoriesID");
+				Categories ct = CategoriesDao.getInstance().selectByID(type);
 				String language = rs.getString("language");
 				String country = rs.getString("country");
 				String desription = rs.getString("description");
 				String path = rs.getString("path");
-				Product product = new Product(productID, productName, author, publishYear, cost, price, quantity, type,
+				Product product = new Product(productID, productName, author, publishYear, cost, price, quantity, ct,
 						language, country, desription, path);
 				data.add(product);
 			}
@@ -47,6 +53,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return data;
 	}
 
+	@Override
 	public Product selectByID(String id) {
 		Product result = null;
 		Connection conn = JDBCUtil.getConnection();
@@ -64,11 +71,12 @@ public class ProductDao implements DaoInterface<Product> {
 				double price = rs.getDouble("price");
 				int quantity = rs.getInt("quantity");
 				String type = rs.getString("type");
+				Categories ct = CategoriesDao.getInstance().selectByName(type);
 				String country = rs.getString("country");
 				String language = rs.getString("language");
 				String desription = rs.getString("description");
 				String path = rs.getString("path");
-				result = new Product(productID, productName, author, publishYear, cost, price, quantity, type, language,
+				result = new Product(productID, productName, author, publishYear, cost, price, quantity, ct, language,
 						country, desription, path);
 			}
 			JDBCUtil.closeConnection(conn);
@@ -78,6 +86,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return result;
 	}
 
+	@Override
 	public int insert(Product t) {
 		int result = 0;
 		Connection conn = JDBCUtil.getConnection();
@@ -92,7 +101,7 @@ public class ProductDao implements DaoInterface<Product> {
 			ps.setDouble(5, t.getCost());
 			ps.setDouble(6, t.getPrice());
 			ps.setInt(7, t.getQuantity());
-			ps.setString(8, t.getType());
+			ps.setInt(8, t.getCategories().getCategoriesID());
 			ps.setString(9, t.getLanguage());
 			ps.setString(10, t.getCountry());
 			ps.setString(11, t.getDescription());
@@ -106,6 +115,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return result;
 	}
 
+	@Override
 	public int insertAll(ArrayList<Product> list) {
 		int count = 0;
 		for (Product t : list) {
@@ -115,6 +125,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return count;
 	}
 
+	@Override
 	public int remove(Product t) {
 		int result = 0;
 
@@ -132,6 +143,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return result;
 	}
 
+	@Override
 	public int removeAll(ArrayList<Product> list) {
 		int count = 0;
 		for (Product t : list) {
@@ -141,6 +153,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return count;
 	}
 
+	@Override
 	public int update(Product t) {
 		int result = 0;
 		Connection conn = JDBCUtil.getConnection();
@@ -153,7 +166,7 @@ public class ProductDao implements DaoInterface<Product> {
 			ps.setDouble(4, t.getCost());
 			ps.setDouble(5, t.getPrice());
 			ps.setInt(6, t.getQuantity());
-			ps.setString(7, t.getType());
+			ps.setString(7, t.getCategories().getCategoriesName());
 			ps.setString(8, t.getLanguage());
 			ps.setString(9, t.getCountry());
 			ps.setString(10, t.getDescription());
@@ -201,6 +214,19 @@ public class ProductDao implements DaoInterface<Product> {
 		return result;
 	}
 
+	public List<Product> selectNextProduct() {
+		List<Product> list = new ArrayList<>();
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select * from Product ";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+
+		} catch (Exception e) {
+
+		}
+		return list;
+	}
+
 	public String selectMainVideo() {
 		String temp = "";
 		Connection conn = JDBCUtil.getConnection();
@@ -216,7 +242,7 @@ public class ProductDao implements DaoInterface<Product> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return temp;
+		return null;
 	}
 
 	public boolean checkFilmName(String name) {
@@ -229,9 +255,9 @@ public class ProductDao implements DaoInterface<Product> {
 			pd.setString(1, temp);
 			ResultSet rs = pd.executeQuery();
 			while (rs.next()) {
-				if(!((rs.getString("productName")) == null)) {
-				result = true;
-				System.out.println(result);
+				if (!((rs.getString("productName")) == null)) {
+					result = true;
+					System.out.println(result);
 				}
 
 			}
@@ -251,7 +277,103 @@ public class ProductDao implements DaoInterface<Product> {
 				array[i] = Character.toUpperCase(array[i]);
 			}
 		}
-
 		return new String(array);
 	}
+
+	public ArrayList<String> getLanguage() {
+		ArrayList<String> list = new ArrayList<>();
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select languageName from Language";
+		try {
+			PreparedStatement pd = conn.prepareStatement(sql);
+			ResultSet rs = pd.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("languageName"));
+			}
+			JDBCUtil.closeConnection(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return list;
+	}
+
+	public ArrayList<String> getCountry() {
+		ArrayList<String> list = new ArrayList<>();
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select * from Country";
+		try {
+			PreparedStatement pd = conn.prepareStatement(sql);
+			ResultSet rs = pd.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("country"));
+			}
+			JDBCUtil.closeConnection(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (String value : list) {
+			System.out.println(value);
+		}
+		return list;
+	}
+
+	public ArrayList<String> getCategories() {
+		ArrayList<String> list = new ArrayList<>();
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select categoriesName from Categories";
+		try {
+			PreparedStatement pd = conn.prepareStatement(sql);
+			ResultSet rs = pd.executeQuery();
+			while (rs.next()) {
+				list.add(rs.getString("categoriesName"));
+			}
+			JDBCUtil.closeConnection(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (String value : list) {
+			System.out.println(value);
+		}
+		return list;
+	}
+
+	public ArrayList<Product> testOffset() {
+		ArrayList<Product> list = new ArrayList<>();
+		Connection conn = JDBCUtil.getConnection();
+		String sql = "select * from Product limit 4 offset 1";
+		try {
+			PreparedStatement pd = conn.prepareStatement(sql);
+			ResultSet rs = pd.executeQuery();
+			while (rs.next()) {
+				String productName = rs.getString("productName");
+				String author = rs.getString("author");
+				Date publishYear = rs.getDate("publishYear");
+				double cost = rs.getDouble("cost");
+				double price = rs.getDouble("price");
+				int quantity = rs.getInt("quantity");
+				int type = rs.getInt("categoriesID");
+				Categories categories = CategoriesDao.getInstance().selectByID(String.valueOf(type));
+				String country = rs.getString("country");
+				String language = rs.getString("language");
+				String description = rs.getString("description");
+				String path = rs.getString("path");
+
+				Product pr = new Product(productName, author, publishYear, cost, price, quantity, categories, language,
+						country, description, path);
+				list.add(pr);
+			}
+			JDBCUtil.closeConnection(conn);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		for (Product value : list) {
+			System.out.println(value);
+		}
+		for(Product product : list) {
+			System.out.println(product.toString());
+		}
+		return list;
+	}
+
 }

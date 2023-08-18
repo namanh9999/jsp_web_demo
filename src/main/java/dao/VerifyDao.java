@@ -5,8 +5,6 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import javax.servlet.http.HttpSession;
-
 import model.Customer;
 import model.Verify;
 

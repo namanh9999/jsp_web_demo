@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.Date;
+import java.util.ArrayList;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -15,10 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import dao.CategoriesDao;
 import dao.ProductDao;
+import model.Categories;
 import model.Product;
 
 /**
@@ -40,17 +41,25 @@ public class ProductController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		RequestDispatcher rd = getServletContext().getRequestDispatcher("Product/product.jsp");
-		rd.forward(request, response);
+		try {
+			Class.forName("com.mysql.cj.jdbc.Driver");
+		} catch (Exception e) {
+		}
+
+		String action = request.getParameter("action");
+		if(action.equals("showAllProduct")) {
+			selectAllProduct(request, response);
+		}
 	}
 
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
 	 *      response)
 	 */
+	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
@@ -61,7 +70,20 @@ public class ProductController extends HttpServlet {
 		String action = request.getParameter("action");
 		if (action.equals("addProduct")) {
 			addProduct(request, response);
+			writeMainVideo(request, response);
+		}else if(action.equals("showAllProduct")) {
+			selectAllProduct(request, response);
 		}
+	}
+
+	private void selectAllProduct(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String url  = "";
+		HttpSession session = request.getSession();
+		ArrayList<Product> list = ProductDao.getInstance().selectAll();
+		session.setAttribute("allProduct", list);
+		url = "/Admin/AdminManager/ProductManager.jsp";
+		RequestDispatcher rd = getServletContext().getRequestDispatcher(url);
+		rd.forward(request, response);
 	}
 
 	private void addProduct(HttpServletRequest request, HttpServletResponse response)
@@ -80,26 +102,24 @@ public class ProductController extends HttpServlet {
 			double price = Double.valueOf(request.getParameter("price"));
 			int quantity = Integer.valueOf(request.getParameter("quantity"));
 			String type = request.getParameter("type").trim();
+			Categories ct = CategoriesDao.getInstance().selectByName(type);
 			String country = request.getParameter("country").trim();
 			String language = request.getParameter("language").trim();
 			String description = request.getParameter("description").trim();
 			Part film = request.getPart("path");
-			System.out.println("this is part on part Film" + film);
+			System.out.println("this is the Part class : " + film);
 			// BeanUtils.populate(pd, request.getParameterMap());
 			String setMain = request.getParameter("setMainVideo");
-			System.out.println(setMain);
+			System.out.println("set Main  : " + setMain);
+
 			String folder = getServletContext().getRealPath("/") + "Product/Path";
-
-			System.out.println("this is folder" + folder);
-
+			System.out.println("This is the real path : " + folder);
 			String fileName = Path.of(film.getSubmittedFileName()).getFileName().toString();
-			System.out.println("this is fileName" + fileName);
-
 			String filePath = folder + "/" + fileName;
-			System.out.println("this is filepath" + filePath);
-			Product pd = new Product(productID, productName, author, publishYear, cost, price, quantity, type, language,
+			
+			Product pd = new Product(productID, productName, author, publishYear, cost, price, quantity, ct, language,
 					country, description, fileName);
-			if (ProductDao.getInstance().checkFilmName(productName) == true) {
+			if (ProductDao.getInstance().checkFilmName(productName)) {
 				session.setAttribute("Product", pd);
 				request.setAttribute("e_productName", "Film's name already exist");
 				request.setAttribute("setMain", setMain);
@@ -107,13 +127,13 @@ public class ProductController extends HttpServlet {
 			} else {
 
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
-				if (isMultipart == true) {
-					if (isMp4File(fileName) == true) {
+				if (isMultipart) {
+					if (isMp4File(fileName)) {
 						ProductDao.getInstance().insert(pd);
 						film.write(filePath);
-						System.out.println("insert successfully");
 					} else {
 						e_file = "Not have to mp4";
+
 						request.setAttribute("e_file", e_file);
 						request.setAttribute("Product", pd);
 						url = "/Product/Futher.jsp";
@@ -125,25 +145,9 @@ public class ProductController extends HttpServlet {
 					url = "/Product/Futher.jsp";
 				}
 				url = "/Admin/index.jsp";
-				System.out.println("import success");
 			}
-
-			if (!(setMain == null)) {
-				folder = getServletContext().getRealPath("/") + "Product/MainVideo";
-				System.out.println("this is folder " + folder);
-				System.out.println("this is file name " + fileName);
-				String filePath2 = folder + "/" + "mainVideo.mp4";
-				System.out.println("this is filePath for main video " + filePath2);
-				File file = new File(filePath2);
-				if (file.exists() == true) {
-					file.delete();
-				}
-				ProductDao.getInstance().updateMainVideo(fileName);
-				System.out.println("film : " + film);
-				film.write(filePath2);
-				System.out.println("Write main video successfully");
-				url = "/Admin/index.jsp";
-			}
+			// check and add mainVideo
+			writeMainVideo(request, response);
 		} catch (Exception e) {
 			e.printStackTrace();
 			url = "/Product/Futher.jsp";
@@ -172,6 +176,29 @@ public class ProductController extends HttpServlet {
 	private boolean isMp4File(String fileName) {
 		boolean result = false;
 		if (fileName.endsWith(".mp4")) {
+			result = true;
+		}
+		return result;
+	}
+
+	private boolean writeMainVideo(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException {
+		boolean result = false;
+		String setMain = request.getParameter("setMainVideo");
+		if (!(setMain == null)) {
+			Part film = request.getPart("path");
+			System.out.println("this is part 2" + film);
+			String folder2 = getServletContext().getRealPath("/") + "Product/MainVideo";
+			System.out.println(folder2);
+			String filePath2 = folder2 + "/" + "mainVideo.mp4";
+
+			System.out.println("filePath2 " + folder2);
+			File file = new File(filePath2);
+			if (file.exists()) {
+				file.delete();
+			}
+			ProductDao.getInstance().updateMainVideo("mainVideo.mp4");
+			film.write(filePath2);
 			result = true;
 		}
 		return result;

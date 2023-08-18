@@ -14,8 +14,9 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return new CustomerDao();
 	}
 
-	private ArrayList<Customer> data = new ArrayList<Customer>();
+	private ArrayList<Customer> data = new ArrayList<>();
 
+	@Override
 	public ArrayList<Customer> selectAll() {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "select * from Customer;";
@@ -47,6 +48,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return data;
 	}
 
+	@Override
 	public Customer selectByID(String id) {
 		Customer cs = null;
 		Connection conn = JDBCUtil.getConnection();
@@ -119,10 +121,11 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return cs;
 	}
 
+	@Override
 	public int insert(Customer t) {
 		int result = 0;
 		Connection conn = JDBCUtil.getConnection();
-		String sql = "insert into Customer values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,? )";
+		String sql = "insert into Customer values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?,?)";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, t.getCustomerID());
@@ -138,6 +141,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 			ps.setString(11, t.getPhoneNumber());
 			ps.setString(12, t.getEmail());
 			ps.setBoolean(13, t.isEmailRegister());
+			ps.setString(14, t.getAvatarPath());
 			ps.executeUpdate();
 			JDBCUtil.closeConnection(conn);
 			result = 1;
@@ -147,6 +151,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return result;
 	}
 
+	@Override
 	public int insertAll(ArrayList<Customer> list) {
 		int count = 0;
 		for (Customer checkOnList : list) {
@@ -155,6 +160,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return count;
 	}
 
+	@Override
 	public int remove(Customer t) {
 
 		int result = 0;
@@ -172,6 +178,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return result;
 	}
 
+	@Override
 	public int removeAll(ArrayList<Customer> list) {
 		int count = 0;
 		for (Customer checkOnList : list) {
@@ -180,6 +187,7 @@ public class CustomerDao implements DaoInterface<Customer> {
 		return count;
 	}
 
+	@Override
 	public int update(Customer t) {
 		int result = 0;
 		Connection conn = JDBCUtil.getConnection();

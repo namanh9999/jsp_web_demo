@@ -1,3 +1,5 @@
+<%@page import="model.Product"%>
+<%@page import="java.util.ArrayList"%>
 <%@page import="dao.ProductDao"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
@@ -22,7 +24,6 @@
 </head>
 <body style="background-color: black">
 	<%
-
 	try {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 	} catch (Exception e) {
@@ -37,16 +38,16 @@
 	if (avatarPath == null) {
 		avatarPath = "default.jpg";
 	}
-	
-	String mainVideo = ProductDao.getInstance().selectMainVideo();
-	System.out.print("this is main video" + mainVideo);
-	if(mainVideo.equals("")){
-		mainVideo = url+ "/img/default.mp4";	
-	} else {
-		
-		mainVideo =url+ "/MainVideo/"+mainVideo;	
-	}
 
+	String mainVideo = ProductDao.getInstance().selectMainVideo();
+	System.out.print("This is main video" + mainVideo);
+	if (mainVideo == null) {
+		mainVideo = url + "/Product/MainVideo/default.mp4";
+	} else {
+
+		mainVideo = url + "/Product/MainVideo/" + mainVideo;
+	}
+	ArrayList<Product> list = ProductDao.getInstance().testOffset();
 	System.out.println(mainVideo);
 	%>
 	<!-- Navbar -->
@@ -65,16 +66,16 @@
 				<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link active"
 						aria-current="page" href="#">Home</a></li>
-					<li class="nav-item"><a class="nav-link" href="#">Link</a></li>
+					<li class="nav-item"><a class="nav-link" href="">My Cart</a></li>
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#" role="button"
 						data-bs-toggle="dropdown" aria-expanded="false"> Account </a>
 						<ul class="dropdown-menu">
-							<li><a class="dropdown-item" href="#">Action</a></li>
-							<li><a class="dropdown-item" href="#">Another action</a></li>
-							<li><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">Something else
-									here</a></li>
+							<li><a class="dropdown-item"
+								href="<%=url%>/CustomerDirec/register.jsp">Sign Up</a></li>
+							<li><a class="dropdown-item" href="<%=url%>/login.jsp">Sign
+									In</a></li>
+							<li><a class="dropdown-item" href="#">Something </a></li>
 						</ul></li>
 				</ul>
 				<form class="d-flex" role="search">
@@ -82,337 +83,88 @@
 						aria-label="Search">
 					<button class="btn btn-outline-success" type="submit">Search</button>
 				</form>
-
 			</div>
 		</div>
 	</nav>
-	<div class="ratio ratio-16x9">
-		<iframe src="<%=mainVideo%>" title="YouTube video"
-			allowfullscreen></iframe>
+	<div class="ratio ratio-16x9 ">
+		<video controls loop muted autoplay>
+			<source src="<%=mainVideo%>">
+		</video>
 	</div>
 	<div class="container">
+		<%
+		for (int i = 0; i < 4; i++) {
+		%>
 		<div class="row">
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<div class="ratio ratio-16x9">
-					<iframe src="<%=url%>/img/video1.mp4" title="YouTube video"
-						allowfullscreen></iframe>
-				</div>
+			<%
+			for (Product pr : list) {
+			%>
+			<div class="card border-secondary col-md-3 my-5 p-5">
+				<div class="card-header" align="center"></div>
+				<video src="<%=url%>/Product/Path/<%=pr.getPath()%>" class="vid1"
+					id="vid1" loop controls muted></video>
 				<div class="card-body ">
-					<h5 class="card-title" align="center">Fast And Furious</h5>
-					<p class="card-text">This is a best beautiful place in the
-						world</p>
+					<h5 class="card-title" align="center"><%=pr.getProductName()%></h5>
+					<p class="card-text  limit-text-height "><%=pr.getDescription()%></p>
 				</div>
 
 				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country : United State</li>
+					<li class="list-group-item">Country : <%=pr.getCountry()%></li>
 					<li class="list-group-item">Price : <label
-						class="text-decoration-line-through">36.000</label></li>
-					<li class="list-group-item text-success">Cost : 30.000</li>
+						class="text-decoration-line-through"><%=pr.getPrice()%></label></li>
+					<li class="list-group-item text-success">Cost : <%=pr.getCost()%></li>
 				</ul>
-
+					
 				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
 			</div>
-
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<img src="<%=url%>/img/index3.jpg" class="card-img-top" alt="...">
-				<div class="card-body text-success">
-
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
+			<%
+			}
+			%>
 		</div>
-		<div class="row">
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-		</div>
-		<div class="row">
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-		</div>
-		<div class="row">
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
-			<div class="card border-secondary col-md-3">
-				<div class="card-header" align="center">
-					<img src="./assets/img/logo.png" alt="">
-				</div>
-
-				<img src="..." class="card-img-top" alt="...">
-				<div class="card-body text-success">
-					<h5 class="card-title">Success card title</h5>
-					<p class="card-text">Some quick example text to build on the
-						card title and make up the bulk of the card's content.</p>
-				</div>
-				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country</li>
-					<li class="list-group-item">Price</li>
-					<li class="list-group-item">Cost</li>
-				</ul>
-				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
+		<%
+		}
+		%>
+		<div align="center">
+			<button class="btn btn-outline-primary my-5">Previous</button>
+			<button class="btn btn-outline-primary my-5">Next Page</button>
 		</div>
 	</div>
 	<div>
 		<%@ include file="Footer/footer.jsp"%>
 	</div>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"
+		integrity="sha384-zYPOMqeu1DAVkHiLqWBUTcbYfZ8osu1Nd6Z89ify25QV9guujx43ITvfi12/QExE"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.min.js"
+		integrity="sha384-Y4oOpwW3duJdCWv5ly8SCFYWqFDsfob/3GkgExXKV4idmbt98QcxXYs9UoXAB7BZ"
+		crossorigin="anonymous"></script>
 
+	<script>
+		// Listening to the video element
+		let clip1 = document.querySelector(".container .row .card .vid1")
+		let clip2 = document.getElementById("vid1")
+
+		/* Adding the event listeners on the video to play/pause the video. */
+		clip2.addEventListener("mouseover", function(e) {
+			clip2.play();
+		})
+		/* Applying the mouse out event to pause the video */
+		clip2.addEventListener("mouseout", function(e) {
+			clip2.pause();
+		})
+
+		/* Adding the event listeners on the video to play/pause the video. */
+		clip1.addEventListener("mouseover", function(e) {
+			clip1.play();
+		})
+		/* Applying the mouse out event to pause the video */
+		clip1.addEventListener("mouseout", function(e) {
+			clip1.pause();
+		})
+	</script>
 </body>
 </html>
+
+

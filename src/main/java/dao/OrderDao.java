@@ -8,18 +8,17 @@ import java.util.ArrayList;
 
 import model.Customer;
 import model.EnumClass;
-import model.EnumClass.OrderStatus;
-import model.EnumClass.Payments;
 import model.Order;
 
 public class OrderDao implements DaoInterface<Order> {
 
-	private ArrayList<Order> data = new ArrayList<Order>();
+	private ArrayList<Order> data = new ArrayList<>();
 
 	public static OrderDao getInstance() {
 		return new OrderDao();
 	}
 
+	@Override
 	public ArrayList<Order> selectAll() {
 		Connection conn = JDBCUtil.getConnection();
 
@@ -57,6 +56,7 @@ public class OrderDao implements DaoInterface<Order> {
 		return data;
 	}
 
+	@Override
 	public Order selectByID(String findId) {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "select * from Orders ";
@@ -93,6 +93,7 @@ public class OrderDao implements DaoInterface<Order> {
 		return null;
 	}
 
+	@Override
 	public int insert(Order t) {
 		Connection conn = JDBCUtil.getConnection();
 		String sql = "insert into Orders values (?,?,?,?,?,?,?,?,?,?,?)";
@@ -123,6 +124,7 @@ public class OrderDao implements DaoInterface<Order> {
 		return result;
 	}
 
+	@Override
 	public int insertAll(ArrayList<Order> list) {
 		int count = 0;
 		for(Order t : list){
@@ -132,6 +134,7 @@ public class OrderDao implements DaoInterface<Order> {
 		return count;
 	}
 
+	@Override
 	public int remove(Order t) {
 		int count = 0;
 		Connection conn = JDBCUtil.getConnection();
@@ -148,6 +151,7 @@ public class OrderDao implements DaoInterface<Order> {
 	}
 
 
+	@Override
 	public int removeAll(ArrayList<Order> list) {
 		int count = 0;
 		for (Order t : list) {
@@ -157,10 +161,11 @@ public class OrderDao implements DaoInterface<Order> {
 		return count;
 	}
 
+	@Override
 	public int update(Order t) {
 		this.remove(t);
 		this.insert(t);
-		
+
 		return 1;
 	}
 

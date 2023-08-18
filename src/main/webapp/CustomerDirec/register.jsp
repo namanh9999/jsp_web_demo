@@ -63,8 +63,8 @@
 			<video autoplay loop muted class="back-video"></video>
 			<div class="row justify-content-md-center h-100">
 				<div class="card-wrapper">
-					<div class="brand">
-						<img src="<%=url%>/img/logo.jpg" alt="bootstrap 4 login page">
+					<div class="brand" align="center">
+						<img src="<%=url%>/assets/img/logo.png" alt="bootstrap 4 login page">
 					</div>
 					<div class="card fat">
 						<div class="card-body">
@@ -212,10 +212,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="footer">Copyright &copy; 2023 &mdash; BUG</div>
+			<div class="footer" align="center">
+				Copyright &copy; 2023 &mdash; BUG
+				<jsp:include page="/Footer/footer.jsp"></jsp:include>
+			</div>
 		</div>
 	</section>
-
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
 		crossorigin="anonymous"></script>
