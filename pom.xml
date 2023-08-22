@@ -19,7 +19,7 @@
 			</plugin>
 		</plugins>
 		<finalName>
-		Webdemo	
+		webDemo	
 	</finalName>
 	</build>
 	<dependencies>
