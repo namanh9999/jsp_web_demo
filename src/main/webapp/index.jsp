@@ -33,21 +33,18 @@
 	System.out.println("this is user Name" + ss);
 	String url = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort()
 			+ request.getContextPath();
-	String avatarPath = session.getAttribute("avatarPath") + "";
-	System.out.println(avatarPath);
-	if (avatarPath == null) {
-		avatarPath = "default.jpg";
-	}
-
 	String mainVideo = ProductDao.getInstance().selectMainVideo();
 	System.out.print("This is main video" + mainVideo);
 	if (mainVideo == null) {
 		mainVideo = url + "/Product/MainVideo/default.mp4";
 	} else {
-
 		mainVideo = url + "/Product/MainVideo/" + mainVideo;
 	}
 	ArrayList<Product> list = ProductDao.getInstance().testOffset();
+	System.out.println("size of list : " + list.size());
+	for (Product pr : list) {
+		System.out.println(pr.toString());
+	}
 	System.out.println(mainVideo);
 	%>
 	<!-- Navbar -->
@@ -93,32 +90,36 @@
 	</div>
 	<div class="container">
 		<%
+		int j = 0;
+		System.out.println("j at row Loop" + j);
 		for (int i = 0; i < 4; i++) {
+		System.out.println("i at row Loop" + i);
 		%>
 		<div class="row">
 			<%
-			for (Product pr : list) {
+			int count = 0;
+			for ( ; count < 4 && j <= list.size() ; j++, count++) {
+				System.out.println("j at load card loop " + j);
 			%>
 			<div class="card border-secondary col-md-3 my-5 p-5">
 				<div class="card-header" align="center"></div>
-				<video src="<%=url%>/Product/Path/<%=pr.getPath()%>" class="vid1"
+				<video src="<%=url%>/Product/Path/<%=list.get(j).getPath()%>" class="vid1"
 					id="vid1" loop controls muted></video>
 				<div class="card-body ">
-					<h5 class="card-title" align="center"><%=pr.getProductName()%></h5>
-					<p class="card-text  limit-text-height "><%=pr.getDescription()%></p>
+					<h5 class="card-title" align="center"><%=list.get(j).getProductName()%></h5>
+					<p class="card-text  limit-text-height "><%=list.get(j).getDescription()%></p>
 				</div>
-
 				<ul class="list-group list-group-flush">
-					<li class="list-group-item">Country : <%=pr.getCountry()%></li>
+					<li class="list-group-item">Country : <%=list.get(j).getCountry()%></li>
 					<li class="list-group-item">Price : <label
-						class="text-decoration-line-through"><%=pr.getPrice()%></label></li>
-					<li class="list-group-item text-success">Cost : <%=pr.getCost()%></li>
+						class="text-decoration-line-through"><%=list.get(j).getPrice()%></label></li>
+					<li class="list-group-item text-success">Cost : <%=list.get(j).getCost()%></li>
 				</ul>
-					
 				<jsp:include page="Footer/buttonFooter.jsp"></jsp:include>
-			</div>
+			</div>		
 			<%
 			}
+			System.out.println("j at end of loop card " + j);
 			%>
 		</div>
 		<%

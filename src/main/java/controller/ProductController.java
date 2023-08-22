@@ -107,7 +107,6 @@ public class ProductController extends HttpServlet {
 			String language = request.getParameter("language").trim();
 			String description = request.getParameter("description").trim();
 			Part film = request.getPart("path");
-			System.out.println("this is the Part class : " + film);
 			// BeanUtils.populate(pd, request.getParameterMap());
 			String setMain = request.getParameter("setMainVideo");
 			System.out.println("set Main  : " + setMain);
@@ -125,14 +124,13 @@ public class ProductController extends HttpServlet {
 				request.setAttribute("setMain", setMain);
 				url = "/Product/Futher.jsp";
 			} else {
-
 				boolean isMultipart = ServletFileUpload.isMultipartContent(request);
 				if (isMultipart) {
 					if (isMp4File(fileName)) {
 						ProductDao.getInstance().insert(pd);
 						film.write(filePath);
 					} else {
-						e_file = "Not have to mp4";
+						e_file = "File must be a mp4 file ! Please select again";
 
 						request.setAttribute("e_file", e_file);
 						request.setAttribute("Product", pd);

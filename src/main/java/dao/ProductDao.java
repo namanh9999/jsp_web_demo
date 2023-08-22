@@ -23,7 +23,6 @@ public class ProductDao implements DaoInterface<Product> {
 	@Override
 	public ArrayList<Product> selectAll() {
 		Connection conn = JDBCUtil.getConnection();
-
 		String sql = "select * from Product";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
@@ -214,6 +213,7 @@ public class ProductDao implements DaoInterface<Product> {
 		return result;
 	}
 
+	// to do
 	public List<Product> selectNextProduct() {
 		List<Product> list = new ArrayList<>();
 		Connection conn = JDBCUtil.getConnection();
@@ -341,7 +341,7 @@ public class ProductDao implements DaoInterface<Product> {
 	public ArrayList<Product> testOffset() {
 		ArrayList<Product> list = new ArrayList<>();
 		Connection conn = JDBCUtil.getConnection();
-		String sql = "select * from Product limit 4 offset 1";
+		String sql = "select * from Product limit  16 ";
 		try {
 			PreparedStatement pd = conn.prepareStatement(sql);
 			ResultSet rs = pd.executeQuery();
