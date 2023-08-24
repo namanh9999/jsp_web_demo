@@ -95,7 +95,7 @@
 		for (int i = 0; i < 4; i++) {
 		System.out.println("i at row Loop" + i);
 		%>
-		<div class="row">
+		<div class="row col-md-auto">
 			<%
 			int count = 0;
 			for ( ; count < 4 && j <= list.size() ; j++, count++) {
