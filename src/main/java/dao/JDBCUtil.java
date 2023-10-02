@@ -4,9 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class JDBCUtil {
-	private static String DB = "jdbc:mysql://localhost:3306/Webpage";
+	private static String DB = "jdbc:mysql://localhost:3306/your_database_name";
 	private static String user = "root";
-	private static String pass = "blackblade";
+	private static String pass = "your_password";
 
 	public static Connection getConnection() {
 
